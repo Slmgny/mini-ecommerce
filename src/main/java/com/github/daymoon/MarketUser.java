@@ -65,7 +65,7 @@ public class MarketUser extends User {
                 amount++;
             }
             System.out.printf("%-20s %-10d %-10d %-15d%n", 
-                p.getName(), p.getPrice() , amount , );
+                p.getName(), p.getPrice() , amount);
             previusProduct = p;
         }
     }
