@@ -3,23 +3,30 @@ package com.github.daymoon;
 import java.time.LocalDateTime;
 
 public class Purchase {
-    
-    private LocalDateTime purchaseDate;
+    private int id;
+    private LocalDateTime date;
     private int amount;
-    private MarketUser buyer;
-    private MarketUser seller;
-    private Product product;
-    
-    public Purchase(int amount , MarketUser buyer, MarketUser seller , Product product){
-        this.purchaseDate = purchaseDate.now();
-        this.amount = amount;
-        this.buyer = buyer;
-        this.seller = seller;
-        this.product = product;
+    private int buyerId;
+    private int sellerId;
+    private int productId;
 
-        seller.totalProductsSelled++;
-        product.SellProduct();
-        buyer.addToPurchaseHistory(product);
+    public Purchase(int amount, int buyerId, int sellerId, int productId) {
+        this.date = LocalDateTime.now();
+        this.amount = amount;
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
+        this.productId = productId;
     }
 
+    public Purchase(int id, String dateString, int amount, int sellerId, int buyerId, int productId) {
+        this.id = id;
+        this.date = LocalDateTime.parse(dateString);
+        this.amount = amount;
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
+        this.productId = productId;
+    }
+
+    
 }
+
