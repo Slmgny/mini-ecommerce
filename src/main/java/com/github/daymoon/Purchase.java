@@ -9,6 +9,7 @@ public class Purchase {
     private MarketUser buyer;
     private MarketUser seller;
     private Product product;
+    
     public Purchase(int amount , MarketUser buyer, MarketUser seller , Product product){
         this.purchaseDate = purchaseDate.now();
         this.amount = amount;
