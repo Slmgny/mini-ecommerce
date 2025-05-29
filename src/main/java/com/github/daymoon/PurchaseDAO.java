@@ -12,8 +12,8 @@ public class PurchaseDAO {
         String sql = "SELECT id, date, amount, sellerId, buyerId, productId  FROM Purchase";;
 
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -40,13 +40,15 @@ public class PurchaseDAO {
         ArrayList<Purchase> purchases = new ArrayList<>();
 
         String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
-        String sql = "SELECT id, date, amount, sellerId, buyerId, selledId FROM purchases";
+        String sql = "SELECT id, date, amount, sellerId, buyerId, productId FROM Purchase WHERE buyerId = ?";
 
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+            PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            while (rs.next() && rs.getInt("sellerId") == UserId) {
+            pst.setInt(1, UserId);  
+            ResultSet rs = pst.executeQuery();  
+
+            while (rs.next()) {
                 int id = rs.getInt("id");
                 String date = rs.getString("date");
                 int amount = rs.getInt("amount");
@@ -54,8 +56,8 @@ public class PurchaseDAO {
                 int buyerId = rs.getInt("buyerId");
                 int productId = rs.getInt("productId");
 
-                Purchase Purchase = new Purchase(id, date, amount, sellerId, buyerId , productId);
-                purchases.add(Purchase);
+                Purchase purchase = new Purchase(id, date, amount, sellerId, buyerId , productId);
+                purchases.add(purchase);
             }
 
         } catch (SQLException e) {
@@ -64,4 +66,5 @@ public class PurchaseDAO {
 
         return purchases;
     }
+
 }

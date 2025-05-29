@@ -14,8 +14,8 @@ public class ProductDAO {
         String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products";
 
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -45,8 +45,8 @@ public class ProductDAO {
         String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products";
 
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next() && rs.getInt("sellerId") == UserId) {
                 int id = rs.getInt("id");
