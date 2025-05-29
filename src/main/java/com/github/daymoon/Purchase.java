@@ -18,6 +18,7 @@ public class Purchase {
         this.product = product;
 
         seller.totalProductsSelled++;
+        product.SellProduct();
         buyer.addToPurchaseHistory(product);
     }
 

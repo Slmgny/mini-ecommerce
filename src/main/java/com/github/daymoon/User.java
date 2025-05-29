@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 public abstract class User {
+    protected int id;
     protected String name;
     protected String password;
     

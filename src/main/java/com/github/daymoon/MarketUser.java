@@ -47,12 +47,8 @@ public class MarketUser extends User {
 
     public void ShowUserProducts() {
     
-        System.out.printf("%-20s %-10s %-10s %-15s%n", "Name", "Price", "Stock", "Total Purchases");
-
-        for (Product p : marketProducts) {
-            System.out.printf("%-20s %-10d %-10d %-15d%n", 
-                p.getName(), p.getPrice(), p.getStock(), p.getSellCount());
-        }
+        ProductDAO userProducts = new ProductDAO();
+        userProducts.getAllProductsBySellerId(this.id);
     }
 
     public void ShowPuchaseHistory() {
