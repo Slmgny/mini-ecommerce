@@ -9,7 +9,7 @@ public class PurchaseDAO {
         ArrayList<Purchase> purchases = new ArrayList<>();
 
         String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
-        String sql = "SELECT id, date, amount, sellerId, buyerId, productId  FROM Purchase";;
+        String sql = "SELECT id, date, amount, sellerId, buyerId, productId  FROM Purchase";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement st = conn.createStatement();

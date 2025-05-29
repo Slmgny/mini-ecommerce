@@ -24,6 +24,10 @@ public class MarketUser extends User {
         super(name , password);
     }
 
+    public MarketUser(int id, String name, String password) {
+        super(id, name, password);
+    }
+
     public void addToCart(Product p){
         cart.add(p);
     }

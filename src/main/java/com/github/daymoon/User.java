@@ -14,6 +14,12 @@ public abstract class User {
         this.password = password;
         AddToDataBase();
     }
+    
+    public User(int id, String name , String password){
+        this.id = id;
+        this.name = name;
+        this.password = password;
+    }
 
     public void login(){
         System.out.println(name + "Logged in");
