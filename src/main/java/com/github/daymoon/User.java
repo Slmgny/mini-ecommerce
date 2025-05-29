@@ -1,5 +1,8 @@
 package com.github.daymoon;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 public abstract class User {
     protected String name;
@@ -8,6 +11,7 @@ public abstract class User {
     public User(String name , String password){
         this.name = name;
         this.password = password;
+        AddToDataBase();
     }
 
     public void login(){
@@ -15,5 +19,19 @@ public abstract class User {
     }
     public void logout(){
         System.out.println(name + "Logged out");
+    }
+
+    public void AddToDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "INSERT INTO Products(name , price) VALUES(?, ?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, this.name);
+            pst.setString(2, this.password);
+            pst.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

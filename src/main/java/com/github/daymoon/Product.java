@@ -8,14 +8,17 @@ public class Product {
 
     private String name;
     private int price;
-    private int id;
+    private int sellCount;
+    private int stock;
     
     public Product(String name, int price) {
         this.name = name;
         this.price = price;
         AddToDataBase();
     }
+    
 
+    //Getter and Setters
     public String getName() {
         return name;
     }
@@ -28,13 +31,26 @@ public class Product {
     public void setPrice(int price) {
         this.price = price;
     }
-    public int getId() {
-        return id;
+    public int getSellCount() {
+        return sellCount;
     }
+
+    public void setSellCount(int sellCount) {
+        this.sellCount = sellCount;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
 
     public void AddToDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db"){
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
             String sql = "INSERT INTO Products(name , price) VALUES(?, ?)";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, this.name);
@@ -45,6 +61,29 @@ public class Product {
         }
 
     }
+
+    public void DeleteFromDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "INSERT FROM Products WHERE name = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, this.name);
+
+            int deleted = pst.executeUpdate();
+            if(deleted>0){
+                System.out.println("Product Successfully Deleted!");
+            }else{
+                System.out.println("Failed to Find the Product");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    
+
+    
 
     
 }
