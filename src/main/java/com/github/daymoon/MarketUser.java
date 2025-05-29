@@ -22,12 +22,39 @@ public class MarketUser extends User {
 
     public void addToPurchaseHistory(Product p){
         purchaseHistory.add(p);
+        purchaseDate.now();
     }
 
     public void ShowCart(){
+        System.out.printf("%-20s %-10s", "Name", "Price");
         for(Product p: cart){
-            System.out.println(p.getName() + "                " + p.getPrice());
+            System.out.printf("%-20s %-10d", 
+            p.getName(), p.getPrice());
         }
     }
 
+    public void ShowUserProducts() {
+    
+        System.out.printf("%-20s %-10s %-10s %-15s%n", "Name", "Price", "Stock", "Total Purchases");
+
+        for (Product p : marketProducts) {
+            System.out.printf("%-20s %-10d %-10d %-15d%n", 
+                p.getName(), p.getPrice(), p.getStock(), p.getSellCount());
+        }
+    }
+
+    public void ShowPuchaseHistory() {
+    
+        System.out.printf("%-20s %-10s %-10s %-10s", "Name", "Price", "Amount" , "Purchase Time");
+        Product previusProduct = null;
+        for (Product p : purchaseHistory) {
+            int amount = 1;
+            for(Product p: purchaseHistory ){
+                amount++;
+            }
+            System.out.printf("%-20s %-10d %-10d %-15d%n", 
+                p.getName(), p.getPrice() , amount , );
+            previusProduct = p;
+        }
+    }
 }

@@ -47,6 +47,13 @@ public class Product {
         this.stock = stock;
     }
 
+    
+
+    public void SellProduct(){
+        stock--;
+        sellCount++;
+    }
+    
 
     public void AddToDataBase(){
 
@@ -70,11 +77,13 @@ public class Product {
             pst.setString(1, this.name);
 
             int deleted = pst.executeUpdate();
+
             if(deleted>0){
                 System.out.println("Product Successfully Deleted!");
             }else{
                 System.out.println("Failed to Find the Product");
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }
