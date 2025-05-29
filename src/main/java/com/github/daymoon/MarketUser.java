@@ -7,8 +7,8 @@ public class MarketUser extends User {
     protected int totalProductsSelled;
     private ArrayList<Product> cart = new ArrayList<>();
     private PurchaseDAO purchaseHistory = new PurchaseDAO();
-    private ProductDAO userProducts = new ProductDAO();
-    
+    private ProductDAO products = new ProductDAO();
+    private UserDAO userDAO = new UserDAO();
 
     public int getTotalProductsSelled() {
         return totalProductsSelled;
@@ -40,14 +40,18 @@ public class MarketUser extends User {
     }
 
     public void ShowUserProducts() {
-        userProducts.getAllProductsBySellerId(AppSession.currentUserId);
+        System.out.printf( "%-25s %-15s %-15s %-15s " , "Product Name" , "Price" , "Stock" , "Total Purchases");
+        for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
+            System.out.printf("%-25s %-15s %-15s %-20s %-15s " , p.getName() , p.getPrice() , p.getStock() , p.getSellCount());
+            System.out.println();
+        }
     }
 
     public void ShowPuchaseHistory() {
-    
-        System.out.printf( "%-25s %-15s %-15s %-20s %-15s " , "Name" , "Price" , "Amount" , "Seller" , "Date");
-        for(Purchase purchase: purchaseHistory.getAllPurchasesByUserId(AppSession.currentUserId)){
-            
+        System.out.printf( "%-25s %-15s %-15s %-20s %-20s " , "Product Name" , "Price" , "Amount" , "Seller" , "Date");
+        for(Purchase p: purchaseHistory.getAllPurchasesByUserId(AppSession.currentUserId)){
+            System.out.printf("%-25s %-15s %-15s %-20s %-15s " , products.getProductById(p.getProductId()).getName() , products.getProductById(p.getProductId()).getPrice() , p.getAmount() , userDAO.geUserById(p.getSellerId()).getName() , p.getDate());
+            System.out.println();
         }
         
     }
