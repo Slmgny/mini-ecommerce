@@ -48,7 +48,7 @@ public class MarketUser extends User {
     public void ShowUserProducts() {
     
         ProductDAO userProducts = new ProductDAO();
-        userProducts.getAllProductsBySellerId(this.id);
+        userProducts.getAllProductsBySellerId(AppSession.currentUserId);
     }
 
     public void ShowPuchaseHistory() {
