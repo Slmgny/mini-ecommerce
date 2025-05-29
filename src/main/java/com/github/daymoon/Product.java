@@ -20,14 +20,13 @@ public class Product {
         AddToDataBase();
     }
     
-    public Product(int id,String name, int price, int sellerId, int sellCount, int stock) {
+    public Product(int id,String name, int price, int sellCount, int stock , int sellerId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.sellerId = sellerId;
         this.sellCount = sellCount;
         this.stock = stock;
-        AddToDataBase();
     }
 
 
@@ -68,23 +67,54 @@ public class Product {
         sellCount++;
     }
 
+    //Data Base Handling
     public ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
 
         String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
-        String sql = "SELECT name, price, stock, sell_count FROM Products";
+        String sql = "SELECT id, name, price, stock, sell_count, selledId FROM Products";;
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 int price = rs.getInt("price");
                 int stock = rs.getInt("stock");
                 int sellCount = rs.getInt("sell_count");
+                int sellerId = rs.getInt("selledId");
 
-                Product product = new Product(id,name, price, stock, sellCount);
+                Product product = new Product(id, name, price, stock, sellCount , sellerId);
+                products.add(product);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
+    }
+    public ArrayList<Product> getAllProductsBySellerId(int selledId) {
+        ArrayList<Product> products = new ArrayList<>();
+
+        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+        String sql = "SELECT id, name, price, stock, sell_count, selledId FROM Products";;
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next() && rs.getInt("selledId") == sellerId) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                int stock = rs.getInt("stock");
+                int sellCount = rs.getInt("sell_count");
+                int sellerId = rs.getInt("selledId");
+
+                Product product = new Product(id, name, price, stock, sellCount , sellerId);
                 products.add(product);
             }
 
@@ -96,23 +126,25 @@ public class Product {
     }
 
     public void AddToDataBase(){
-
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "INSERT INTO Products(name , price) VALUES(?, ?)";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, this.name);
-            pst.setInt(2, this.price);
-            pst.executeUpdate();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
+    try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        String sql = "INSERT INTO Products(name, price, stock, sell_count, selledId) VALUES(?, ?, ?, ?, ?)";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, this.name);
+        pst.setInt(2, this.price);
+        pst.setInt(3, this.stock);
+        pst.setInt(4, this.sellCount);
+        pst.setInt(5, this.sellerId);
+        pst.executeUpdate();
+    }catch(Exception e){
+        e.printStackTrace();
     }
+}
+
 
     public void DeleteFromDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "INSERT FROM Products WHERE name = ?";
+            String sql = "DELETE FROM Products WHERE name = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1, this.name);
 
@@ -130,9 +162,4 @@ public class Product {
 
     }
 
-    
-
-    
-
-    
 }

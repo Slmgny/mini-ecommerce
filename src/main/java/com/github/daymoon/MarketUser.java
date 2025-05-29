@@ -61,9 +61,6 @@ public class MarketUser extends User {
         Product previusProduct = null;
         for (Product p : purchaseHistory) {
             int amount = 1;
-            for(Product p: purchaseHistory ){
-                amount++;
-            }
             System.out.printf("%-20s %-10d %-10d %-15d%n", 
                 p.getName(), p.getPrice() , amount);
             previusProduct = p;
