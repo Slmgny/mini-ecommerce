@@ -2,16 +2,16 @@ package com.github.daymoon;
 
 public class Cart {
     private int amount;
-    private MarketUser buyer;
-    private Product product;
+    private int buyerId;
+    private int productId;
 
 
-    public Cart(int amount, MarketUser buyer, Product product) {
+    public Cart(int buyerId, int productId, int amount) {
         this.amount = amount;
-        this.buyer = buyer;
-        this.product = product;
+        this.buyerId = buyerId;
+        this.productId = productId;
 
-        
+
     }
 
 }
