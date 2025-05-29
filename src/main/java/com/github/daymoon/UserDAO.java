@@ -21,8 +21,9 @@ public class UserDAO {
                     int id = rs.getInt("id");
                     String name = rs.getString("name");
                     String password = rs.getString("password");
+                    int userType = rs.getInt("userType");
 
-                    User user = new MarketUser(id , name , password);
+                    User user = new MarketUser(id , name , password, userType);
                     users.add(user);
                 }
 

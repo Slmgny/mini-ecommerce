@@ -5,11 +5,9 @@ import java.util.ArrayList;
 public class MarketUser extends User {
 
     protected int totalProductsSelled;
-    private ArrayList<Product> purchaseHistory = new ArrayList<>();
     private ArrayList<Product> cart = new ArrayList<>();
-    private ArrayList<Product> marketProducts = new ArrayList<>();
-
-
+    private PurchaseDAO purchaseHistory = new PurchaseDAO();
+    private ProductDAO userProducts = new ProductDAO();
     
 
     public int getTotalProductsSelled() {
@@ -24,22 +22,14 @@ public class MarketUser extends User {
         super(name , password);
     }
 
-    public MarketUser(int id, String name, String password) {
-        super(id, name, password);
+    public MarketUser(int id, String name, String password , int userType) {
+        super(id, name, password , userType);
     }
 
     public void addToCart(Product p){
         cart.add(p);
     }
 
-    public void addToMarket(Product p){
-        marketProducts.add(p);
-    }
-
-    public void addToPurchaseHistory(Product p){
-        purchaseHistory.add(p);
-        
-    }
 
     public void ShowCart(){
         System.out.printf("%-20s %-10s", "Name", "Price");
@@ -50,20 +40,15 @@ public class MarketUser extends User {
     }
 
     public void ShowUserProducts() {
-    
-        ProductDAO userProducts = new ProductDAO();
         userProducts.getAllProductsBySellerId(AppSession.currentUserId);
     }
 
     public void ShowPuchaseHistory() {
     
-        System.out.printf("%-20s %-10s %-10s %-10s", "Name", "Price", "Amount" , "Purchase Time");
-        Product previusProduct = null;
-        for (Product p : purchaseHistory) {
-            int amount = 1;
-            System.out.printf("%-20s %-10d %-10d %-15d%n", 
-                p.getName(), p.getPrice() , amount);
-            previusProduct = p;
+        System.out.printf( "%-25s %-15s %-15s %-20s %-15s " , "Name" , "Price" , "Amount" , "Seller" , "Date");
+        for(Purchase purchase: purchaseHistory.getAllPurchasesByUserId(AppSession.currentUserId)){
+            
         }
+        
     }
 }

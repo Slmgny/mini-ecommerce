@@ -8,17 +8,19 @@ public abstract class User {
     protected int id;
     protected String name;
     protected String password;
+    protected int userType;
     
     public User(String name , String password){
         this.name = name;
         this.password = password;
         AddToDataBase();
     }
-    
-    public User(int id, String name , String password){
+
+    public User(int id, String name , String password , int userType){
         this.id = id;
         this.name = name;
         this.password = password;
+        this.userType = userType;
     }
 
     public void login(){
