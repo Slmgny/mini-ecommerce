@@ -8,12 +8,14 @@ public class Product {
 
     private String name;
     private int price;
+    private int sellerId;
     private int sellCount;
     private int stock;
     
-    public Product(String name, int price) {
+    public Product(String name, int price , int sellerId) {
         this.name = name;
         this.price = price;
+        this.sellerId = sellerId;
         AddToDataBase();
     }
     
@@ -53,7 +55,7 @@ public class Product {
         stock--;
         sellCount++;
     }
-    
+
 
     public void AddToDataBase(){
 

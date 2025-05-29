@@ -4,9 +4,21 @@ import java.util.ArrayList;
 
 public class MarketUser extends User {
 
+    protected int totalProductsSelled;
     private ArrayList<Product> purchaseHistory = new ArrayList<>();
     private ArrayList<Product> cart = new ArrayList<>();
     private ArrayList<Product> marketProducts = new ArrayList<>();
+
+
+    
+
+    public int getTotalProductsSelled() {
+        return totalProductsSelled;
+    }
+
+    public void setTotalProductsSelled(int totalProductsSelled) {
+        this.totalProductsSelled = totalProductsSelled;
+    }
 
     public MarketUser(String name , String password){
         super(name , password);
@@ -22,7 +34,7 @@ public class MarketUser extends User {
 
     public void addToPurchaseHistory(Product p){
         purchaseHistory.add(p);
-        purchaseDate.now();
+        
     }
 
     public void ShowCart(){
