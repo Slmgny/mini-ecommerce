@@ -8,11 +8,10 @@ public class DBConnection {
 
     public static Connection connect() {
         try {
-            System.out.println("Connected");
             return DriverManager.getConnection(URL);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to Connect");
+            System.out.println("Failed to Connect to the Data Base");
             return null;
         }
     }

@@ -25,10 +25,34 @@ public class Main {
     public static void main(String[] args) {
         Main app = new Main();
         app.init();
-        app
+        app.run();
 
         
     }
+
+
+    private String readInput(){
+        String input = sc.nextLine().trim();
+        switch (input.toLowerCase()){
+            case "help":
+            printHelp();
+            return readInput();
+            case "exit":
+            System.exit(0);
+            break;
+            case "logout":
+            if(AppSession.currentUser == null){
+                System.out.println("You haven't logged in yet");
+                break;
+            }
+            System.out.println("Logging out...");
+            AppSession.currentUser=null;
+            LoginOrSignUpPage();
+            break;
+        }
+        return input;
+    }
+
 
     private void init(){
 
@@ -39,14 +63,12 @@ public class Main {
 
     }
 
-
-    
-
     
     public void run(){
         boolean closeApp = false;
-        while(closeApp){
+        while(!closeApp){
             System.out.println("Welcome to Mini E-Commerce App");
+            LoginOrSignUpPage();
         }
     }
 
@@ -54,20 +76,19 @@ public class Main {
     //Pages
     public void LoginOrSignUpPage(){
         System.out.println("Log in or Sign up");
-            String userName = sc.nextLine();
+            String userName = readInput();
             Boolean newUser = true;
 
             for(User u: userList){
                 if(u.getName().equals(userName)){
                     newUser = false;
                     AppSession.currentUser = u;
-                    AppSession.currentUserId = u.id;
                     break;
                 }
             }
             if(newUser){
                 System.out.println("Create Your Password");
-                String password = sc.nextLine();
+                String password = readInput();
                 if(isPasswordValid(password)){
                     User user = new MarketUser(userName , password , 1);
                     user.AddToDataBase();
@@ -77,7 +98,7 @@ public class Main {
                     
             }else{
                 System.out.println("Enter Your Password");
-                String password = sc.nextLine();
+                String password = readInput();
                 
                 if(isPasswordCorrect(password)){
 
@@ -92,6 +113,7 @@ public class Main {
 
 
     public static void printHelp(){
+        System.out.println("=== HELP MENU ===");
         System.out.println("Type Back to go to previous menu");
         System.out.println("Type Exit to close the App");
         System.out.println("Type Profile to go to Profile menu");

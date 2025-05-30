@@ -78,7 +78,7 @@ public class Product {
 
 
 
-    
+
     public void SellProduct(){
         stock--;
         sellCount++;
@@ -90,7 +90,7 @@ public class Product {
     //Data Base
     public void AddToDataBase(){
     try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-        String sql = "INSERT INTO Products(name, price, stock, sell_count, selledId) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Product(name, price, stock, sell_count, selledId) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
         pst.setString(1, this.name);
         pst.setInt(2, this.price);

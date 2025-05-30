@@ -8,9 +8,10 @@ public abstract class User {
     protected String password;
     protected int userType;
     
-    public User(String name , String password){
+    public User(String name , String password , int userType){
         this.name = name;
         this.password = password;
+        this.userType = userType;
     }
 
     public User(int id, String name , String password , int userType){
@@ -64,10 +65,12 @@ public abstract class User {
     public void AddToDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "INSERT INTO Products(name , price) VALUES(?, ?)";
+            String sql = "INSERT INTO User(name , password , userType) VALUES( ? , ? , ? )";
             PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, this.name);
             pst.setString(2, this.password);
+            pst.setInt(3, this.userType);
+
 
             pst.executeUpdate();
 

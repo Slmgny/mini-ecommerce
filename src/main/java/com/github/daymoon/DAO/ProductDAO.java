@@ -14,7 +14,7 @@ public class ProductDAO {
         ArrayList<Product> products = new ArrayList<>();
 
 
-        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products";
+        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Product";
 
         try (Connection conn = DBConnection.connect();
              Statement st = conn.createStatement();
@@ -45,7 +45,7 @@ public class ProductDAO {
         ArrayList<Product> products = new ArrayList<>();
 
 
-        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products WHERE sellerId = ?";
+        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Product WHERE sellerId = ?";
 
         try (Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -75,7 +75,7 @@ public class ProductDAO {
     public Product getProductById(int productId){
 
 
-        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products WHERE id = ?";
+        String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Product WHERE id = ?";
         Product product = null;
         try (Connection conn = DBConnection.connect();
              PreparedStatement pst = conn.prepareStatement(sql)) {

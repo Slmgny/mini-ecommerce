@@ -22,7 +22,7 @@ public class MarketUser extends User {
     }
 
     public MarketUser(String name , String password , int userType){
-        super(name , password);
+        super(name , password , userType);
     }
 
     public MarketUser(int id, String name, String password , int userType) {
