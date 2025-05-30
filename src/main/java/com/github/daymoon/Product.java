@@ -1,9 +1,6 @@
 package com.github.daymoon;
 
 import java.sql.*;
-import java.util.ArrayList;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 public class Product {
 
@@ -62,12 +59,32 @@ public class Product {
         this.stock = stock;
     }
 
-    
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(int sellerId) {
+        this.sellerId = sellerId;
+    }
+
+
+
+
+    
     public void SellProduct(){
         stock--;
         sellCount++;
     }
+
+
 
 
     //Data Base

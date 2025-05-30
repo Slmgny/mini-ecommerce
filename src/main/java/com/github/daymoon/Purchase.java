@@ -52,6 +52,14 @@ public class Purchase {
         this.date = date;
     }
 
+    public String getDateString() {
+        return dateString;
+    }
+
+    public void setDateString(String dateString) {
+        this.dateString = dateString;
+    }
+
     public int getAmount() {
         return amount;
     }
@@ -84,7 +92,7 @@ public class Purchase {
         this.productId = productId;
     }
 
-    //DBCONECTİON GEREKLİMİ
+
     public void AddToDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
@@ -110,5 +118,6 @@ public class Purchase {
         }
 
     }
-}
 
+    
+}

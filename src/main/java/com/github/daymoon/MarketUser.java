@@ -1,6 +1,5 @@
 package com.github.daymoon;
 
-import java.util.ArrayList;
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.ProductDAO;
@@ -10,7 +9,6 @@ import com.github.daymoon.DAO.UserDAO;
 public class MarketUser extends User {
 
     protected int totalProductsSelled;
-    private ArrayList<Product> cart = new ArrayList<>();
     private PurchaseDAO purchaseHistory = new PurchaseDAO();
     private ProductDAO products = new ProductDAO();
     private UserDAO userDAO = new UserDAO();
@@ -23,16 +21,12 @@ public class MarketUser extends User {
         this.totalProductsSelled = totalProductsSelled;
     }
 
-    public MarketUser(String name , String password){
+    public MarketUser(String name , String password , int userType){
         super(name , password);
     }
 
     public MarketUser(int id, String name, String password , int userType) {
         super(id, name, password , userType);
-    }
-
-    public void addToCart(Product p){
-        cart.add(p);
     }
 
 
