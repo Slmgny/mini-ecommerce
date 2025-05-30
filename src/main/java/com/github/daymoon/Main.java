@@ -25,6 +25,7 @@ public class Main {
     public static void main(String[] args) {
         Main app = new Main();
         app.init();
+        System.out.println();
         app.run();
 
         
@@ -60,7 +61,7 @@ public class Main {
         productList.addAll(products.getAllProducts());
         purchaseList.addAll(purchases.getAllPurchases());
         cartList.addAll(carts.getAllCarts());
-
+        System.out.println(userList.get(1));
     }
 
     
@@ -74,39 +75,47 @@ public class Main {
 
 
     //Pages
+
+    //Login Sign Up Page
     public void LoginOrSignUpPage(){
         System.out.println("Log in or Sign up");
-            String userName = readInput();
-            Boolean newUser = true;
-
-            for(User u: userList){
-                if(u.getName().equals(userName)){
-                    newUser = false;
-                    AppSession.currentUser = u;
-                    break;
-                }
+        System.out.print("Name: ");
+        String userName = readInput();
+        Boolean newUser = true;
+        User LoginUser = null;
+        for(User u: userList){
+            if(u.getName().equals(userName)){
+                newUser = false;
+                LoginUser = u;
+                break;
             }
-            if(newUser){
-                System.out.println("Create Your Password");
-                String password = readInput();
-                if(isPasswordValid(password)){
-                    User user = new MarketUser(userName , password , 1);
-                    user.AddToDataBase();
-                    AppSession.currentUserId = user.id;
-                    AppSession.currentUser = user;
-                }
-                    
-            }else{
-                System.out.println("Enter Your Password");
-                String password = readInput();
-                
-                if(isPasswordCorrect(password)){
-
-                }
+        }
+        if(newUser){ // Sign up
+            System.out.print("Create Your Password: ");
+            String password = readInput();
+            while(!isPasswordValid(password)){
+                System.out.print("Create Your Password: ");
+                password = readInput();
             }
+            User user = new MarketUser(userName , password , 1);
+            user.AddToDataBase();
+            userList.add(user);
+            AppSession.currentUser = user;
+        }else{ // Login
+            System.out.print("Enter Your Password: ");
+            String password = readInput();
+            while(!isPasswordCorrect(password)){
+                System.out.print("Enter Your Password: ");
+                password = readInput();
+            }
+            AppSession.currentUser = LoginUser;
+        }
     }
 
+    //Main Page
+    public void MainPage(){
 
+    }
 
 
 
@@ -150,7 +159,7 @@ public class Main {
     }
     public static Boolean isPasswordCorrect(String password){
 
-        return AppSession.currentUser.password.equals(password);
+        return AppSession.currentUser.getPassword().equals(password);
 
     }
 }

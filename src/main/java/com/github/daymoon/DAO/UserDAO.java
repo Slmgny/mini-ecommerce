@@ -14,7 +14,7 @@ public class UserDAO {
         ArrayList<User> users = new ArrayList<>();
 
 
-        String sql = "SELECT id, name, password FROM User";
+        String sql = "SELECT id, name, password , userType FROM User";
 
         try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -42,7 +42,7 @@ public class UserDAO {
         User user = null;
 
 
-        String sql = "SELECT id, name, password FROM User WHERE id = ?";
+        String sql = "SELECT id, name, password , userType FROM User WHERE id = ?";
 
         try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)){
