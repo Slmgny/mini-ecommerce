@@ -1,9 +1,10 @@
-package com.github.daymoon;
+package com.github.daymoon.DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-import javax.print.DocFlavor.STRING;
+import com.github.daymoon.MarketUser;
+import com.github.daymoon.User;
 
 public class UserDAO {
     
@@ -54,7 +55,7 @@ public class UserDAO {
                     String password = rs.getString("password");
                     int userType = rs.getInt("userType");
 
-                    user = new MarketUser(id ,name, password , userType)
+                    user = new MarketUser(id ,name, password , userType);
                 }
 
             }catch(Exception e){

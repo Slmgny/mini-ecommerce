@@ -2,6 +2,11 @@ package com.github.daymoon;
 
 import java.util.ArrayList;
 
+import com.github.daymoon.DAO.CartDAO;
+import com.github.daymoon.DAO.ProductDAO;
+import com.github.daymoon.DAO.PurchaseDAO;
+import com.github.daymoon.DAO.UserDAO;
+
 public class MarketUser extends User {
 
     protected int totalProductsSelled;

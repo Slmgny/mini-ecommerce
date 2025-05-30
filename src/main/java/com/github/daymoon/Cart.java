@@ -1,5 +1,7 @@
 package com.github.daymoon;
 
+import java.sql.*;
+
 public class Cart {
     private int amount;
     private int buyerId;
@@ -7,11 +9,9 @@ public class Cart {
 
 
     public Cart(int buyerId, int productId, int amount) {
-        this.amount = amount;
         this.buyerId = buyerId;
         this.productId = productId;
-
-
+        this.amount = amount;
     }
 
 
@@ -44,4 +44,21 @@ public class Cart {
         this.productId = productId;
     }
     
+    public void AddToDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "INSERT INTO Cart (buyerId , productId , amount) VALUES (? , ? , ?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+
+            pst.setInt(1, this.buyerId);
+            pst.setInt(2, this.productId);
+            pst.setInt(3, this.amount);
+
+            pst.executeUpdate();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
