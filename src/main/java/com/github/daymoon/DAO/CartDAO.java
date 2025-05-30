@@ -11,14 +11,14 @@ import com.github.daymoon.DBConnection;
 public class CartDAO {
     
 
-    public ArrayList<Cart> getAllCarts(int userID){
+    public ArrayList<Cart> getAllCarts(){
         ArrayList<Cart> cart = new ArrayList<>();
 
         String sql = "SELECT userId , productId , amount FROM Cart";
 
         try(Connection conn = DBConnection.connect();
         PreparedStatement pst = conn.prepareStatement(sql)){
-            
+
             ResultSet rs = pst.executeQuery();
 
             while(rs.next()){
