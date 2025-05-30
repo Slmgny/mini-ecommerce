@@ -3,6 +3,7 @@ package com.github.daymoon.DAO;
 import java.sql.*;
 import java.util.ArrayList;
 
+import com.github.daymoon.DBConnection;
 import com.github.daymoon.Purchase;
 
 public class PurchaseDAO {
@@ -10,10 +11,10 @@ public class PurchaseDAO {
     public ArrayList<Purchase> getAllPurchases() {
         ArrayList<Purchase> purchases = new ArrayList<>();
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, date, amount, sellerId, buyerId, productId  FROM Purchase";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DBConnection.connect();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
@@ -41,10 +42,10 @@ public class PurchaseDAO {
     public ArrayList<Purchase> getAllPurchasesByUserId(int userId) {
         ArrayList<Purchase> purchases = new ArrayList<>();
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, date, amount, sellerId, buyerId, productId FROM Purchase WHERE buyerId = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, userId);  

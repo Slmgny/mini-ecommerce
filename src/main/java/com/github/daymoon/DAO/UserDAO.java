@@ -3,6 +3,7 @@ package com.github.daymoon.DAO;
 import java.sql.*;
 import java.util.ArrayList;
 
+import com.github.daymoon.DBConnection;
 import com.github.daymoon.MarketUser;
 import com.github.daymoon.User;
 
@@ -12,10 +13,10 @@ public class UserDAO {
 
         ArrayList<User> users = new ArrayList<>();
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, name, password FROM User";
 
-        try(Connection conn = DriverManager.getConnection(url);
+        try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
 
                 ResultSet rs = pst.executeQuery();
@@ -40,10 +41,10 @@ public class UserDAO {
     public User geUserById(int userId){
         User user = null;
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, name, password FROM User WHERE id = ?";
 
-        try(Connection conn = DriverManager.getConnection(url);
+        try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)){
 
                 pst.setInt(1, userId);

@@ -3,6 +3,7 @@ package com.github.daymoon.DAO;
 import java.sql.*;
 import java.util.ArrayList;
 
+import com.github.daymoon.DBConnection;
 import com.github.daymoon.Product;
 
 public class ProductDAO {
@@ -12,10 +13,10 @@ public class ProductDAO {
     public ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DBConnection.connect();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
@@ -43,10 +44,10 @@ public class ProductDAO {
     public ArrayList<Product> getAllProductsBySellerId(int UserId) {
         ArrayList<Product> products = new ArrayList<>();
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products WHERE sellerId = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
             
             pst.setInt(1, UserId);
@@ -73,10 +74,10 @@ public class ProductDAO {
 
     public Product getProductById(int productId){
 
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+
         String sql = "SELECT id, name, price, stock, sellCount, sellerId FROM Products WHERE id = ?";
         Product product = null;
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DBConnection.connect();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
                 pst.setInt(1, productId);

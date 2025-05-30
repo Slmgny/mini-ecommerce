@@ -1,12 +1,12 @@
 package com.github.daymoon.DAO;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import com.github.daymoon.Cart;
+import com.github.daymoon.DBConnection;
 
 public class CartDAO {
     
@@ -15,9 +15,8 @@ public class CartDAO {
         ArrayList<Cart> cart = new ArrayList<>();
 
         String sql = "SELECT userId , productId , amount FROM Cart WHERE userId = ?";
-        String url = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
 
-        try(Connection conn = DriverManager.getConnection(url);
+        try(Connection conn = DBConnection.connect();
         PreparedStatement pst = conn.prepareStatement(sql)){
 
             pst.setInt(1, userID);
