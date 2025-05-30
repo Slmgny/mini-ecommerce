@@ -3,6 +3,13 @@ package com.github.daymoon;
 public class AppSession {
     
     public static User currentUser;
-    public static int currentUserId = currentUser.id;
+    public static int currentUserId = -1;
+    static{
+        if(currentUser != null){
+            currentUserId = currentUser.getId();
+        }
+    }
+    
+    
 
 }

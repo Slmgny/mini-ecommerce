@@ -50,6 +50,9 @@ public class Main {
             AppSession.currentUser=null;
             LoginOrSignUpPage();
             break;
+            case "main":
+            mainPage();
+            break;
         }
         return input;
     }
@@ -61,7 +64,6 @@ public class Main {
         productList.addAll(products.getAllProducts());
         purchaseList.addAll(purchases.getAllPurchases());
         cartList.addAll(carts.getAllCarts());
-        System.out.println(userList.get(1));
     }
 
     
@@ -82,11 +84,10 @@ public class Main {
         System.out.print("Name: ");
         String userName = readInput();
         Boolean newUser = true;
-        User LoginUser = null;
         for(User u: userList){
             if(u.getName().equals(userName)){
                 newUser = false;
-                LoginUser = u;
+                AppSession.currentUser = u;
                 break;
             }
         }
@@ -108,21 +109,44 @@ public class Main {
                 System.out.print("Enter Your Password: ");
                 password = readInput();
             }
-            AppSession.currentUser = LoginUser;
+            
         }
     }
 
     //Main Page
-    public void MainPage(){
+    public void mainPage(){
+        System.out.println("=== MAİN MENU ===");
+        System.out.println("1. Market");
+        System.out.println("2. Profile");
+        System.out.println("3. Cart");
+        System.out.println("4. Purchases");
+        System.out.println("5. Logout");
+        System.out.println("6. Exit");
+        System.out.println("Select an option");
+        String input = readInput();
+
+        switch (input){
+            case "1":
+
+        }
+        
 
     }
 
+    public void marketPage(){
+
+    }
+
+    public void cartPage(){
+
+    }
+
+    public
 
 
 
 
     public static void printHelp(){
-        System.out.println("=== HELP MENU ===");
         System.out.println("Type Back to go to previous menu");
         System.out.println("Type Exit to close the App");
         System.out.println("Type Profile to go to Profile menu");
