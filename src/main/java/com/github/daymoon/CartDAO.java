@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class CartDAO {
     
 
-    public ArrayList<Cart> getCartsByUserId(int userID){
+    public ArrayList<Cart> getCartProductsByUserId(int userID){
         ArrayList<Cart> cart = new ArrayList<>();
 
         String sql = "SELECT userId , productId , amount FROM Cart WHERE userId = ?";

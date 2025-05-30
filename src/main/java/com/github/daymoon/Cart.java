@@ -14,4 +14,34 @@ public class Cart {
 
     }
 
+
+    public int getAmount() {
+        return amount;
+    }
+
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+
+    public int getBuyerId() {
+        return buyerId;
+    }
+
+
+    public void setBuyerId(int buyerId) {
+        this.buyerId = buyerId;
+    }
+
+
+    public int getProductId() {
+        return productId;
+    }
+
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+    
 }
