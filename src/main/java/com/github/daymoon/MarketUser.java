@@ -48,7 +48,7 @@ public class MarketUser extends User {
     public void ShowPurchaseHistory() {
         System.out.printf( "%-25s %-15s %-15s %-20s %-20s\n " , "Product Name" , "Price" , "Amount" , "Seller" , "Date");
         for(Purchase p: purchaseHistory.getAllPurchasesByUserId(AppSession.currentUserId)){
-            System.out.printf("%-25s %-15s %-15s %-20s %-15s\n " , products.getProductById(p.getProductId()).getName() , products.getProductById(p.getProductId()).getPrice() , p.getAmount() , userDAO.geUserById(p.getSellerId()).getName() , p.getDate());
+            System.out.printf("%-25s %-15s %-15s %-20s %-15s\n " , products.getProductById(p.getProductId()).getName() , products.getProductById(p.getProductId()).getPrice() , p.getAmount() , userDAO.getUserById(p.getSellerId()).getName() , p.getDate());
             System.out.println();
         }
         

@@ -224,6 +224,9 @@ public class Main {
         int pagenumber = 4;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PROFİLE ===");
+        System.out.println("1. Edit Your Name");
+        System.out.println("2. Change Password");
+        System.out.println("3. View Your Products");
 
     }
 
@@ -232,6 +235,14 @@ public class Main {
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
         System.out.println("=== CART ===");
+        getUserCart();
+        System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Remove From Cart \n");
+        int input = readIntInput("");
+        switch (input){
+            case 1:
+
+        }
+
     }
 
     //Purchases Page
@@ -283,7 +294,7 @@ public class Main {
 
 
 
-    // Getting info
+    // GETTING INFO
 
     //Name
     public String AskName(){
@@ -368,13 +379,33 @@ public class Main {
 
 
 
-
+    //LISTS
 
     //Product List
     public void getAllProducts(){
-        System.out.printf("%-10d %-20s %-10d %-10s\n", "Id" , "Name", "Price" , "Description");
+        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description");
         for(Product p: productList){
-            System.out.printf("%-10d %-20s %-10s %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
+            System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
+        }
+    }
+
+    //User's Cart List
+    public void getUserCart(){
+        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amounth");
+        for(Cart c: cartList){
+            System.out.printf("%-10d %-20s %-10.2f %-10d\n", products.getProductById(c.getProductId()).getId(),
+            products.getProductById(c.getProductId()).getName(), products.getProductById(c.getProductId()).getPrice() , c.getAmount());
+        }
+    }
+
+    //Purchase History
+    public void getPurchaseHistory(){
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s\n", "Id" , "Name", "Price" , "Amounth" , "Seller");
+        for(Purchase p: purchaseList){
+            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s\n", products.getProductById(p.getProductId()).getId(),
+            products.getProductById(p.getProductId()).getName(), products.getProductById(p.getProductId()).getPrice() , p.getAmount() ,
+            users.getUserById(p.getSellerId()).getName());
+            
         }
     }
 }

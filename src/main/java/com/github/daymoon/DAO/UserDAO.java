@@ -38,7 +38,7 @@ public class UserDAO {
         return users;
     }
 
-    public User geUserById(int userId){
+    public User getUserById(int userId){
         User user = null;
 
 
