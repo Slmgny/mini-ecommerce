@@ -79,6 +79,7 @@ public abstract class User {
     // Wallet
     public void depositMoney(double depositMoney){
         this.money =+ depositMoney;
+        System.out.println("New balance: " + this.money);
     }
     public void Pay(double pay){
         this.money =- pay;

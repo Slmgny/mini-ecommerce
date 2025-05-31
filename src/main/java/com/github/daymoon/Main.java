@@ -285,7 +285,18 @@ public class Main {
         AppSession.currentPage = pagenumber;
         System.out.println("=== Wallet ===");
         System.out.println("Balance: " + AppSession.currentUser.getMoney());
-        System.out.println("Deposit");
+        System.out.println("1. Deposit Money");
+        System.out.println("2. Main Menu");
+        int input = readIntInput("Select an option: ");
+        switch (input){
+            case 1:
+            double deposit = readIntInput("Deposit amount: ");
+            AppSession.currentUser.depositMoney(deposit);
+            break;
+            case 2:
+            mainPage();
+            break;
+        }
     }
 
     //Cart Page
