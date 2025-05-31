@@ -10,22 +10,26 @@ public class Product {
     private int sellerId;
     private int sellCount;
     private int stock;
+    private String description;
     
-    public Product(String name, int price , int sellerId , int stock) {
+    public Product(String name, int price , int sellerId , int stock , String description) {
         this.name = name;
         this.price = price;
         this.sellerId = sellerId;
         this.stock = stock;
+        this.description = description;
+
         AddToDataBase();
     }
     
-    public Product(int id,String name, int price, int sellCount, int stock , int sellerId) {
+    public Product(int id,String name, int price, int sellCount, int stock , int sellerId , String description) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.sellerId = sellerId;
         this.sellCount = sellCount;
         this.stock = stock;
+        this.description = description;
     }
 
 
@@ -75,7 +79,13 @@ public class Product {
         this.sellerId = sellerId;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
 
@@ -130,4 +140,7 @@ public class Product {
 
     }
 
+    
+
+    
 }
