@@ -3,8 +3,10 @@ package com.github.daymoon;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.SpringLayout;
 
 import com.github.daymoon.DAO.CartDAO;
+import com.github.daymoon.DAO.FavoritesDAO;
 import com.github.daymoon.DAO.ProductDAO;
 import com.github.daymoon.DAO.PurchaseDAO;
 import com.github.daymoon.DAO.UserDAO;
@@ -16,12 +18,14 @@ public class Main {
     ProductDAO products = new ProductDAO();
     PurchaseDAO purchases = new PurchaseDAO();
     CartDAO carts = new CartDAO();
+    FavoritesDAO favorites = new FavoritesDAO();
 
 
     ArrayList<User> userList = new ArrayList<>();
     ArrayList<Product> productList = new ArrayList<>();
     ArrayList<Purchase> purchaseList = new ArrayList<>();
     ArrayList<Cart> cartList = new ArrayList<>();
+    ArrayList<Favorites> favoritesList = new ArrayList<>();
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -50,6 +54,7 @@ public class Main {
             }
             System.out.println("Logging out...");
             AppSession.currentUser=null;
+            AppSession.currentUserId = -1;
             LoginOrSignUpPage();
             break;
             case "menu":
@@ -77,10 +82,16 @@ public class Main {
                 profilePage();
                 break;
                 case 5:
-                cartPage();
+                walletPage();
                 break;
                 case 6:
+                cartPage();
+                break;
+                case 7:
                 purchasesPage();
+                break;
+                case 8:
+                AddProductPage();
                 break;
             }
             break;
@@ -106,6 +117,8 @@ public class Main {
         productList.addAll(products.getAllProducts());
         purchaseList.addAll(purchases.getAllPurchases());
         cartList.addAll(carts.getAllCarts());
+        favoritesList.addAll(favorites.getAllFavorites());
+
     }
 
     
@@ -225,8 +238,31 @@ public class Main {
         int input = readIntInput("Enter Product Id: ");
         for(Product p: productList){
             if(input == p.getId()){
-                System.out.printf("%-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
-                readIntInput("Select an option: ");
+                double price = p.getPrice();
+                System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
+                System.out.printf("%-10s %-10s %-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
+                int input2 = readIntInput("Select an option: ");
+                switch (input2){
+                    case 1:
+                    if(!canBuy(price)){
+                        continue;
+                    }
+                    break;
+                    case 2:
+                    int amount = readIntInput("Enter the Amount");
+                    Cart c = new Cart(AppSession.currentUserId, p.getId(), amount);
+                    c.AddToDataBase();
+                    cartList.add(c);
+                    System.out.println("Successfully Added to Your Cart");
+                    marketPage();
+                    break;
+                    case 3:
+                    Favorites f = new Favorites(p.getId(), AppSession.currentUserId);
+                    f.AddToDataBase();
+                    favoritesList.add(f);
+                    System.out.println("Successfully Added to Your Favorites");
+                    break;
+                }
             }
         }
     }
@@ -239,6 +275,7 @@ public class Main {
         System.out.println("1. Edit Your Name");
         System.out.println("2. Change Password");
         System.out.println("3. View Your Products");
+        System.out.println("4. View Your Favorites");
 
     }
 
@@ -246,6 +283,9 @@ public class Main {
     public void walletPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
+        System.out.println("=== Wallet ===");
+        System.out.println("Balance: " + AppSession.currentUser.getMoney());
+        System.out.println("Deposit");
     }
 
     //Cart Page
@@ -256,14 +296,13 @@ public class Main {
         System.out.println("=== CART ===");
         getUserCart();
         System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
-        int input = readIntInput("");
+        int input = readIntInput(null);
         switch (input){
             case 1:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
                 totalPrice += products.getProductById(c.getProductId()).getPrice();
             }
-            if(totalPrice > AppSession.currentUser.getMoney()){
-                System.out.println("Failed to Purchase. Insufficient balance");
+            if(!canBuy(totalPrice)){
                 cartPage();
                 break;
             }else{
@@ -285,12 +324,14 @@ public class Main {
 
     //Purchases Page
     public void purchasesPage(){
+
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PURCHASE HISTORY ===");
         getPurchaseHistory();
         System.out.println("Type 'menu'to go back to the main menu: ");;
-        readInput("");
+        readInput(null);
+
     }
 
     //Add Product Page
@@ -351,7 +392,7 @@ public class Main {
         isCorrect = true;
         return name;
         }
-        return "";
+        return null;
 
     }
 
@@ -414,6 +455,18 @@ public class Main {
     public static Boolean isPasswordCorrect(String password){
         return AppSession.currentUser.getPassword().equals(password);
     }
+
+    
+
+
+    public static Boolean canBuy(double totalPrice){
+        if(AppSession.currentUser.getMoney() < totalPrice){
+            System.out.println("Failed to Purchase. Insufficient balance");
+            return false;
+        }
+        return true;
+    }
+
 
 
 
