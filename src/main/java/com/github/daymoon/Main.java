@@ -178,7 +178,7 @@ public class Main {
     public void mainPage(){
         int pagenumber = 2;
         AppSession.currentPage = pagenumber;
-        System.out.println("=== MAİN MENU ===");
+        System.out.println("=== MAIN MENU ===");
         System.out.println("1. Market");
         System.out.println("2. Profile");
         System.out.println("3. Wallet");
@@ -278,7 +278,7 @@ public class Main {
     public void profilePage(){
         int pagenumber = 4;
         AppSession.currentPage = pagenumber;
-        System.out.println("=== PROFİLE ===");
+        System.out.println("=== PROFILE ===");
         System.out.println("1. Edit Your Name");
         System.out.println("2. Change Password");
         System.out.println("3. View Your Products");
@@ -313,8 +313,8 @@ public class Main {
         double totalPrice = 0;
         System.out.println("=== CART ===");
         getUserCart();
-        System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
-        int input = readIntInput(null);
+        System.out.printf("%-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
+        int input = readIntInput("Select an option: ");
         switch (input){
             case 1:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
@@ -363,6 +363,7 @@ public class Main {
                         break;
                         case 2:
                         c.DeleteFromDataBase();
+                        break;
                     }
                 }
             }
@@ -374,7 +375,7 @@ public class Main {
 
     //Purchases Page
     public void purchasesPage(){
-
+//ADD REFUND
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PURCHASE HISTORY ===");
@@ -415,7 +416,34 @@ public class Main {
     public void favoritesPage(){
         int pagenumber = 9;
         AppSession.currentPage = pagenumber;
-    }
+        double totalPrice = 0;
+        System.out.println("=== FAVORITES ===");
+        getFavorites();
+        System.out.printf("%-10s %-10s %-10s " , "1. Select Item" , "2. Remove All" , "3. Add All to Cart" , " \n");
+        int input = readIntInput("Select an option: ");
+        switch(input){
+            case 1:
+                for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+                    
+                    totalPrice += products.getProductById(f.getProductId()).getPrice();
+                }
+                if(!canBuy(totalPrice)){
+                    cartPage();
+                    break;
+                }else{
+                    for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                    Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                    products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                    p.AddToDataBase();
+                    purchaseList.add(p);
+                    c.DeleteFromDataBase();
+                    cartList.remove(c);
+                    }
+                }
+                break;
+
+
+        }      
 
 
 
@@ -558,6 +586,16 @@ public class Main {
             prod.getName(), prod.getPrice() , p.getAmount() ,
             users.getUserById(p.getSellerId()).getName());
             
+        }
+    }
+
+    //Favorites List
+    public void getFavorites(){
+        System.out.printf("%-10s %-20s %-10s \n", "Id" , "Name", "Price");
+        for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+            Product prod = products.getProductById(f.getProductId());
+            System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
+            prod.getName(), prod.getPrice());
         }
     }
 }
