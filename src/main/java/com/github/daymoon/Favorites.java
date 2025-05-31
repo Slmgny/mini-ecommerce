@@ -43,4 +43,24 @@ public class Favorites {
         }
 
     }
+
+    public void DeleteFromDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "DELETE FROM Favorites WHERE productId = ? AND userId";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, this.productId);
+            pst.setInt(2, this.userId);
+            int deleted = pst.executeUpdate();
+
+            if(deleted>0){
+            }else{
+                System.out.println("Failed to Find the Favorite Product");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }

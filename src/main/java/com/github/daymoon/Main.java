@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.SpringLayout;
+import javax.xml.parsers.FactoryConfigurationError;
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.FavoritesDAO;
@@ -375,13 +376,37 @@ public class Main {
 
     //Purchases Page
     public void purchasesPage(){
-//ADD REFUND
+
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PURCHASE HISTORY ===");
         getPurchaseHistory();
-        System.out.println("Type 'menu'to go back to the main menu: ");;
-        readInput(null);
+        System.out.printf("%-10s %-10s" , " 1. Request Refund: " , " 2. Main Menu\n");;
+        int input = readIntInput("Select an option: ");
+        switch(input){
+            case 1:
+            int i = readIntInput("Enter Product ID");
+            for(Purchase pur: purchaseList){
+                if(i == pur.getProductId()){
+                    System.out.printf("%-10 %-10" , " 1. Confirm " , " 2. Cancel\n");
+                    int option = readIntInput("Select an option: ");
+                    switch (option){
+                        case 1:
+                        double price = products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
+                        AppSession.currentUser.depositMoney(price);
+                        pur.DeleteFromDataBase();
+                        break;
+                        case 2:
+                        purchasesPage();
+                        break;
+                    }
+                }
+            }
+            break;
+            case 2:
+            mainPage();
+            break;
+        }
 
     }
 
@@ -423,28 +448,49 @@ public class Main {
         int input = readIntInput("Select an option: ");
         switch(input){
             case 1:
-                for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
-                    
-                    totalPrice += products.getProductById(f.getProductId()).getPrice();
-                }
-                if(!canBuy(totalPrice)){
-                    cartPage();
-                    break;
-                }else{
-                    for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                    Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
-                    products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                    p.AddToDataBase();
-                    purchaseList.add(p);
-                    c.DeleteFromDataBase();
-                    cartList.remove(c);
+            int i = readIntInput("Enter Product ID: ");
+            for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+                if(i == f.getProductId()){
+                    Product prod = products.getProductById(f.getProductId());
+                    System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
+                    prod.getName(), prod.getPrice());
+                    System.out.printf("" , " 1. Add to Cart " , " 2. Remove from Favorites ");
+                    int option = readIntInput("Select an option: ");
+                    switch (option){
+                        case 1:
+                        int amount = readIntInput("Enter the amount: ");
+                        Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
+                        c.AddToDataBase();
+                        cartList.add(c);
+                        favoritesPage();
+                        break;
+
+                        case 2:
+                        f.DeleteFromDataBase();
+                        favoritesList.remove(f);
+                        favoritesPage();
+                        break;
                     }
                 }
-                break;
-
+            }
+            break;
+            case 2:
+            for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+                f.DeleteFromDataBase();
+                favoritesList.remove(f);
+            }
+            favoritesPage();
+            break;
+            case 3:
+            for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+                Cart c = new Cart(AppSession.currentUserId, f.getProductId(), 1);
+                c.AddToDataBase();
+                cartList.add(c);
+            }
+            break;
 
         }      
-
+    }
 
 
     // Help

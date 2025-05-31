@@ -122,9 +122,9 @@ public class Product {
     public void DeleteFromDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "DELETE FROM Products WHERE name = ?";
+            String sql = "DELETE FROM Products WHERE id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1, this.name);
+            pst.setInt(1, this.id);
 
             int deleted = pst.executeUpdate();
 
