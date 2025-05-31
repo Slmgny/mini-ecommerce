@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.sound.sampled.SourceDataLine;
+import javax.swing.SpringLayout;
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.ProductDAO;
@@ -34,12 +35,13 @@ public class Main {
     }
 
 
-    private String readInput(){
+    private String readInput(String prompt){
+        System.out.print(prompt);
         String input = sc.nextLine().trim();
         switch (input.toLowerCase()){
             case "help":
             printHelp();
-            return readInput();
+            return readInput(prompt);
             case "exit":
             System.exit(0);
             break;
@@ -87,16 +89,17 @@ public class Main {
         }
         return input;
     }
-    private int readIntInput() {
-    while (true) {
-        String input = readInput(); // komutları kontrol ediyor
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number:");
+
+    private int readIntInput(String prompt) {
+        while (true) {
+            String input = readInput(prompt);
+            try {
+                return Integer.parseInt(input);
+            }catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number:");
+            }
         }
     }
-}
 
 
     private void init(){
@@ -124,8 +127,7 @@ public class Main {
         AppSession.currentPage = pagenumber;
         System.out.println("=== LOG IN OR SIGN UP ===");
         System.out.println("You can type 'help' to see the available commands");
-        System.out.print("Name: ");
-        String userName = readInput();
+        String userName = readInput("Name: ");
         Boolean newUser = true;
         for(User u: userList){
             if(u.getName().equals(userName)){
@@ -136,11 +138,9 @@ public class Main {
         }
         if(newUser){ // Sign up
             System.out.println("=== SIGN UP ===");
-            System.out.print("Create Your Password: ");
-            String password = readInput();
+            String password = readInput("Create Your Password: ");
             while(!isPasswordValid(password)){
-                System.out.print("Create Your Password: ");
-                password = readInput();
+                password = readInput("Create Your Password: ");
             }
             User user = new MarketUser(userName , password , 1);
             user.AddToDataBase();
@@ -150,11 +150,10 @@ public class Main {
             mainPage();
         }else{ // Login
             System.out.println("=== LOG IN ===");
-            System.out.print("Enter Your Password: ");
-            String password = readInput();
+            String password = readInput("Enter Your Password: ");
             while(!isPasswordCorrect(password)){
-                System.out.print("Enter Your Password: ");
-                password = readInput();
+                System.out.println("Incorrect Password");
+                password = readInput("Enter Your Password: ");
             }
             AppSession.previousPage = pagenumber;
             mainPage();
@@ -173,10 +172,8 @@ public class Main {
         System.out.println("5. Add Your Product");
         System.out.println("6. Logout");
         System.out.println("7. Exit");
-        System.out.println("Select an option");
         System.out.println("You can type 'help' to see the available commands");
-
-        String input = readInput();
+        String input = readInput("Select an option: ");
         switch (input){
             case "1":
             AppSession.previousPage = pagenumber;
@@ -216,7 +213,7 @@ public class Main {
         int pagenumber = 3;
         AppSession.currentPage = pagenumber;
         System.out.println("=== MARKET ===");
-        
+        getAllProducts();
     }
 
     //Profile Page
@@ -224,6 +221,7 @@ public class Main {
         int pagenumber = 4;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PROFİLE ===");
+
     }
 
     //Cart Page
@@ -250,11 +248,16 @@ public class Main {
         int pStock;
 
         System.out.println("=== ADD PRODUCT ===");
-        System.out.println("You have to enter your Products Name , Price , Stock and Description");
-        System.out.print("Name: ");
-        pName = readInput();
-        System.out.println("Price: ");
-        pPrice = readIntInput();
+        System.out.println("You have to enter your Products Name , Price , Stock and (Optional) Description");
+        pName = AskName();
+        pPrice = AskPrice();
+        pStock = AskScock();
+        pDesc = readInput("(Optional) Description: ");
+        
+        Product product = new Product(pName, pPrice, pStock, pDesc);
+        product.setSellerId(AppSession.currentUserId);
+        product.AddToDataBase();
+        productList.add(product);
         
     }
 
@@ -270,31 +273,59 @@ public class Main {
 
 
 
+    // Getting info
 
-    public static Boolean isNameValid(String name){
-        if(name.length() < 4){
-            System.out.println("Your Name must be at least 4 characters");
-            return false;
-        }
-        if(!name.matches(".*[a-zA-Z].*")){
-            System.out.println("Your Name Must contain at least 1 letter");
-            return false;
-        }
+    //Name
+    public String AskName(){
 
-        return true;
+        Boolean isCorrect = false;
+        while(!isCorrect){
+            String name = readInput("Name: ");
+            if(name.length() < 4){
+                System.out.println("Your Name must be at least 4 characters");
+                continue;
+        }
+            if(!name.matches(".*[a-zA-Z].*")){
+                System.out.println("Your Name Must contain at least 1 letter");
+                continue;
+        }
+        isCorrect = true;
+        return name;
+        }
+        return "";
+
     }
 
-    public static Boolean isProductNameValid(String name){
-        if(name.length() < 4){
-            System.out.println("Your Product Name must be at least 4 characters ");
-            return false;
-        }
-        if(!name.matches(".*[a-zA-Z].*")){
-            System.out.println("Your Product Name Must contain at least 1 letter");
-            return false;
-        }
+    //Price
+    public int AskPrice(){
 
-        return true;
+        Boolean isCorrect = false;
+        while(!isCorrect){
+            int price = readIntInput("Price: ");
+            if(price <= 0){
+                System.out.println("Price cant be lower that 0");
+                continue;
+        }
+        isCorrect = true;
+        return price;
+        }
+        return -1;
+    }
+
+    //Stock
+    public int AskScock(){
+
+        Boolean isCorrect = false;
+        while(!isCorrect){
+            int stock = readIntInput("Stock: ");
+            if(stock <= 0){
+                System.out.println("stock cant be lower that 0");
+                continue;
+        }
+        isCorrect = true;
+        return stock;
+        }
+        return -1;
     }
 
     public static Boolean isPasswordValid(String password){
@@ -327,9 +358,11 @@ public class Main {
 
 
 
+
+
     //Product List
     public void getAllProducts(){
-        System.out.printf("%-10d %-20s %-10s %-10s\n", "Name", "Price" , "Description");
+        System.out.printf("%-10d %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description");
         for(Product p: productList){
             System.out.printf("%-10d %-20s %-10s %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
         }
