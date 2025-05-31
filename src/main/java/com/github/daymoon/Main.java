@@ -238,14 +238,21 @@ public class Main {
         int input = readIntInput("Enter Product Id: ");
         for(Product p: productList){
             if(input == p.getId()){
-                double price = p.getPrice();
+                int pAmount = readIntInput("Enter Amount: ");
+                double price = p.getPrice() * pAmount;
                 System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
                 System.out.printf("%-10s %-10s %-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
                 int input2 = readIntInput("Select an option: ");
                 switch (input2){
                     case 1:
                     if(!canBuy(price)){
-                        continue;
+                        marketPage();
+                        break;
+                    }else{
+                        AppSession.currentUser.Pay(price);
+                        Purchase pur = new Purchase(pAmount , AppSession.currentUserId , p.getSellerId() , p.getId());
+                        pur.AddToDataBase();
+                        purchaseList.add(pur);
                     }
                     break;
                     case 2:
@@ -311,16 +318,20 @@ public class Main {
         switch (input){
             case 1:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                totalPrice += products.getProductById(c.getProductId()).getPrice();
+                
+                totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
             }
             if(!canBuy(totalPrice)){
                 cartPage();
                 break;
             }else{
                 for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId , products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
                 p.AddToDataBase();
                 purchaseList.add(p);
+                c.DeleteFromDataBase();
+                cartList.remove(c);
             }
             System.out.println("Thank you! Items in your cart have been purchased.");
             System.out.println("Total: " + totalPrice + "$");
@@ -328,6 +339,34 @@ public class Main {
             cartPage();
             break;
             }
+            case 2:
+            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                c.DeleteFromDataBase();
+            }
+            System.out.println("Products Successfully Deleted! From Cart");
+            break;
+            case 3:
+            int i = readIntInput("Enter Product ID: ");
+            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                if(c.getProductId() == i){
+                    System.out.printf("%-10s %-10s" , " 1.Buy " , " 2.Remove ");
+                    int inp = readIntInput("Select an option: ");
+                    switch (inp){
+                        case 1:
+                        
+                        Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                        products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                        p.AddToDataBase();
+                        purchaseList.add(p);
+                        c.DeleteFromDataBase();
+                        cartList.remove(c);
+                        break;
+                        case 2:
+                        c.DeleteFromDataBase();
+                    }
+                }
+            }
+            break;
 
 
         }
@@ -359,7 +398,7 @@ public class Main {
         while(true){
             pName = AskName();
             pPrice = AskPrice();
-            pStock = AskScock();
+            pStock = AskStock();
             pDesc = readInput("(Optional) Description: ");
             
             Product product = new Product(pName, pPrice, pStock, pDesc);
@@ -370,6 +409,12 @@ public class Main {
             System.out.println("You can type 'help' to see the available commands");
             readInput("Type 'menu'to go back to the main menu: ");
         }
+    }
+
+    //Favorites Page
+    public void favoritesPage(){
+        int pagenumber = 9;
+        AppSession.currentPage = pagenumber;
     }
 
 
@@ -424,7 +469,7 @@ public class Main {
     }
 
     //Stock
-    public int AskScock(){
+    public int AskStock(){
 
         Boolean isCorrect = false;
         while(!isCorrect){

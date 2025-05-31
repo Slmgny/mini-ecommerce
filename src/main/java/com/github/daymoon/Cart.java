@@ -61,4 +61,24 @@ public class Cart {
         }
 
     }
+
+    public void DeleteFromDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "DELETE FROM Cart WHERE productId = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, this.productId);
+
+            int deleted = pst.executeUpdate();
+
+            if(deleted>0){
+            }else{
+                System.out.println("Failed to Find the Product");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
