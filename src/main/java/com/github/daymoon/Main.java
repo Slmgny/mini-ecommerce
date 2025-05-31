@@ -3,6 +3,8 @@ package com.github.daymoon;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.sound.sampled.SourceDataLine;
+
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.ProductDAO;
 import com.github.daymoon.DAO.PurchaseDAO;
@@ -51,6 +53,10 @@ public class Main {
             LoginOrSignUpPage();
             break;
             case "main":
+            if(AppSession.currentUser == null){
+                System.out.println("You haven't logged in yet");
+                break;
+            }
             mainPage();
             break;
             case "back":
@@ -81,6 +87,16 @@ public class Main {
         }
         return input;
     }
+    private int readIntInput() {
+    while (true) {
+        String input = readInput(); // komutları kontrol ediyor
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number:");
+        }
+    }
+}
 
 
     private void init(){
@@ -105,7 +121,9 @@ public class Main {
     //Login Sign Up Page
     public void LoginOrSignUpPage(){
         int pagenumber = 1;
-        System.out.println("Log in or Sign up");
+        AppSession.currentPage = pagenumber;
+        System.out.println("=== LOG IN OR SIGN UP ===");
+        System.out.println("You can type 'help' to see the available commands");
         System.out.print("Name: ");
         String userName = readInput();
         Boolean newUser = true;
@@ -117,6 +135,7 @@ public class Main {
             }
         }
         if(newUser){ // Sign up
+            System.out.println("=== SIGN UP ===");
             System.out.print("Create Your Password: ");
             String password = readInput();
             while(!isPasswordValid(password)){
@@ -130,6 +149,7 @@ public class Main {
             AppSession.previousPage = pagenumber;
             mainPage();
         }else{ // Login
+            System.out.println("=== LOG IN ===");
             System.out.print("Enter Your Password: ");
             String password = readInput();
             while(!isPasswordCorrect(password)){
@@ -144,6 +164,7 @@ public class Main {
     //Main Page
     public void mainPage(){
         int pagenumber = 2;
+        AppSession.currentPage = pagenumber;
         System.out.println("=== MAİN MENU ===");
         System.out.println("1. Market");
         System.out.println("2. Profile");
@@ -153,6 +174,8 @@ public class Main {
         System.out.println("6. Logout");
         System.out.println("7. Exit");
         System.out.println("Select an option");
+        System.out.println("You can type 'help' to see the available commands");
+
         String input = readInput();
         switch (input){
             case "1":
@@ -172,14 +195,18 @@ public class Main {
             purchasesPage();
             break;
             case "5":
+            AppSession.previousPage = pagenumber;
+            AddProductPage();
+            case "6":
             AppSession.previousPage = 1;
             System.out.println("Logging out...");
             AppSession.currentUser=null;
             LoginOrSignUpPage();
             break;
-            case "6":
+            case "7":
             System.exit(0);
             break;
+
         }
 
     }
@@ -187,6 +214,7 @@ public class Main {
     //Market Page
     public void marketPage(){
         int pagenumber = 3;
+        AppSession.currentPage = pagenumber;
         System.out.println("=== MARKET ===");
         
     }
@@ -194,21 +222,45 @@ public class Main {
     //Profile Page
     public void profilePage(){
         int pagenumber = 4;
+        AppSession.currentPage = pagenumber;
+        System.out.println("=== PROFİLE ===");
     }
 
     //Cart Page
     public void cartPage(){
         int pagenumber = 5;
+        AppSession.currentPage = pagenumber;
+        System.out.println("=== CART ===");
     }
 
     //Purchases Page
     public void purchasesPage(){
         int pagenumber = 6;
+        AppSession.currentPage = pagenumber;
+        System.out.println("=== PURCHASE HISTORY ===");
+    }
+
+    //Add Product Page
+    public void AddProductPage(){
+        int pagenumber = 7;
+        AppSession.currentPage = pagenumber;
+        String pName;
+        String pDesc;
+        int pPrice;
+        int pStock;
+
+        System.out.println("=== ADD PRODUCT ===");
+        System.out.println("You have to enter your Products Name , Price , Stock and Description");
+        System.out.print("Name: ");
+        pName = readInput();
+        System.out.println("Price: ");
+        pPrice = readIntInput();
+        
     }
 
 
 
-
+    // Help
     public static void printHelp(){
         System.out.println("Type Back to go to previous page");
         System.out.println("Type Exit to close the App");
@@ -218,6 +270,32 @@ public class Main {
 
 
 
+
+    public static Boolean isNameValid(String name){
+        if(name.length() < 4){
+            System.out.println("Your Name must be at least 4 characters");
+            return false;
+        }
+        if(!name.matches(".*[a-zA-Z].*")){
+            System.out.println("Your Name Must contain at least 1 letter");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static Boolean isProductNameValid(String name){
+        if(name.length() < 4){
+            System.out.println("Your Product Name must be at least 4 characters ");
+            return false;
+        }
+        if(!name.matches(".*[a-zA-Z].*")){
+            System.out.println("Your Product Name Must contain at least 1 letter");
+            return false;
+        }
+
+        return true;
+    }
 
     public static Boolean isPasswordValid(String password){
         if(password.length() < 8){
@@ -247,12 +325,13 @@ public class Main {
         return AppSession.currentUser.getPassword().equals(password);
     }
 
+
+
+    //Product List
     public void getAllProducts(){
-        int i = 1;
         System.out.printf("%-10d %-20s %-10s %-10s\n", "Name", "Price" , "Description");
         for(Product p: productList){
-            System.out.printf("%-10d %-20s %-10s %-10s\n", i , p.getName(), p.getPrice() , p.getDescription());
-            i++;
+            System.out.printf("%-10d %-20s %-10s %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
         }
     }
 }

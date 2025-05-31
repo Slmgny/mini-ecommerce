@@ -8,14 +8,13 @@ public class Product {
     private String name;
     private int price;
     private int sellerId;
-    private int sellCount;
+    private int sellCount = 0;
     private int stock;
     private String description;
     
-    public Product(String name, int price , int sellerId , int stock , String description) {
+    public Product(String name, int price , int stock , String description) {
         this.name = name;
         this.price = price;
-        this.sellerId = sellerId;
         this.stock = stock;
         this.description = description;
 
