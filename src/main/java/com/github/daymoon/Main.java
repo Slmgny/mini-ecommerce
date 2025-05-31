@@ -3,8 +3,6 @@ package com.github.daymoon;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.sound.sampled.SourceDataLine;
-import javax.swing.SpringLayout;
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.ProductDAO;
@@ -54,7 +52,7 @@ public class Main {
             AppSession.currentUser=null;
             LoginOrSignUpPage();
             break;
-            case "main":
+            case "menu":
             if(AppSession.currentUser == null){
                 System.out.println("You haven't logged in yet");
                 break;
@@ -133,6 +131,7 @@ public class Main {
             if(u.getName().equals(userName)){
                 newUser = false;
                 AppSession.currentUser = u;
+                AppSession.currentUserId = u.getId();
                 break;
             }
         }
@@ -146,6 +145,7 @@ public class Main {
             user.AddToDataBase();
             userList.add(user);
             AppSession.currentUser = user;
+            AppSession.currentUserId = user.getId();
             AppSession.previousPage = pagenumber;
             mainPage();
         }else{ // Login
@@ -156,6 +156,7 @@ public class Main {
                 password = readInput("Enter Your Password: ");
             }
             AppSession.previousPage = pagenumber;
+            System.out.println("User Id: " + AppSession.currentUserId);
             mainPage();
         }
     }
@@ -198,6 +199,7 @@ public class Main {
             AppSession.previousPage = 1;
             System.out.println("Logging out...");
             AppSession.currentUser=null;
+            AppSession.currentUserId = -1;
             LoginOrSignUpPage();
             break;
             case "7":
@@ -214,6 +216,7 @@ public class Main {
         AppSession.currentPage = pagenumber;
         System.out.println("=== MARKET ===");
         getAllProducts();
+        int input = readIntInput("Enter Product Id: ");
     }
 
     //Profile Page
@@ -249,15 +252,22 @@ public class Main {
 
         System.out.println("=== ADD PRODUCT ===");
         System.out.println("You have to enter your Products Name , Price , Stock and (Optional) Description");
-        pName = AskName();
-        pPrice = AskPrice();
-        pStock = AskScock();
-        pDesc = readInput("(Optional) Description: ");
+        while(true){
+            pName = AskName();
+            pPrice = AskPrice();
+            pStock = AskScock();
+            pDesc = readInput("(Optional) Description: ");
+            
+            Product product = new Product(pName, pPrice, pStock, pDesc);
+            product.setSellerId(AppSession.currentUserId);
+            product.AddToDataBase();
+            productList.add(product);
+            System.out.println("Product Added!");
+            System.out.println("You can type 'help' to see the available commands");
+            readInput("Type 'menu' if you want to go to the main menu: ");
+            
+        }
         
-        Product product = new Product(pName, pPrice, pStock, pDesc);
-        product.setSellerId(AppSession.currentUserId);
-        product.AddToDataBase();
-        productList.add(product);
         
     }
 
@@ -265,10 +275,10 @@ public class Main {
 
     // Help
     public static void printHelp(){
-        System.out.println("Type Back to go to previous page");
-        System.out.println("Type Exit to close the App");
-        System.out.println("Type Profile to go to Profile page");
-        System.out.println("Type Market to go to Market page");
+        System.out.println("Type 'back' to go to previous page");
+        System.out.println("Type 'exit' to close the App");
+        System.out.println("Type 'profile' to go to Profile page");
+        System.out.println("Type 'market' to go to Market page");
     }
 
 
@@ -362,7 +372,7 @@ public class Main {
 
     //Product List
     public void getAllProducts(){
-        System.out.printf("%-10d %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description");
+        System.out.printf("%-10d %-20s %-10d %-10s\n", "Id" , "Name", "Price" , "Description");
         for(Product p: productList){
             System.out.printf("%-10d %-20s %-10s %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
         }

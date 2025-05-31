@@ -6,13 +6,13 @@ public class Product {
 
     private int id;
     private String name;
-    private int price;
+    private double price;
     private int sellerId;
     private int sellCount = 0;
     private int stock;
     private String description;
     
-    public Product(String name, int price , int stock , String description) {
+    public Product(String name, double price , int stock , String description) {
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -21,7 +21,7 @@ public class Product {
         AddToDataBase();
     }
     
-    public Product(int id,String name, int price, int sellCount, int stock , int sellerId , String description) {
+    public Product(int id,String name, double price, int sellCount, int stock , int sellerId , String description) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -40,10 +40,10 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
     public int getSellCount() {
@@ -99,13 +99,14 @@ public class Product {
     //Data Base
     public void AddToDataBase(){
     try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-        String sql = "INSERT INTO Product(name, price, stock, sellCount, selledId) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Product(name, price, stock, sellCount, sellerId , description) VALUES(?, ?, ?, ?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
         pst.setString(1, this.name);
-        pst.setInt(2, this.price);
+        pst.setDouble(2, this.price);
         pst.setInt(3, this.stock);
         pst.setInt(4, this.sellCount);
         pst.setInt(5, this.sellerId);
+        pst.setString(6, this.description);
         pst.executeUpdate();
 
         ResultSet rs = pst.getGeneratedKeys();

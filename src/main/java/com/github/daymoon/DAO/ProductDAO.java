@@ -23,7 +23,7 @@ public class ProductDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                int price = rs.getInt("price");
+                double price = rs.getDouble("price");
                 int stock = rs.getInt("stock");
                 int sellCount = rs.getInt("sellCount");
                 int sellerId = rs.getInt("sellerId");
@@ -58,7 +58,7 @@ public class ProductDAO {
             while (rs.next() && rs.getInt("sellerId") == UserId) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                int price = rs.getInt("price");
+                double price = rs.getDouble("price");
                 int stock = rs.getInt("stock");
                 int sellCount = rs.getInt("sellCount");
                 int sellerId = rs.getInt("sellerId");
@@ -90,7 +90,7 @@ public class ProductDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                int price = rs.getInt("price");
+                double price = rs.getDouble("price");
                 int stock = rs.getInt("stock");
                 int sellCount = rs.getInt("sellCount");
                 int sellerId = rs.getInt("sellerId");
