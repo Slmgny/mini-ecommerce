@@ -7,18 +7,21 @@ public abstract class User {
     protected String name;
     protected String password;
     protected int userType;
+    protected double money;
     
-    public User(String name , String password , int userType){
+    public User(String name , String password , int userType , double  money){
         this.name = name;
         this.password = password;
         this.userType = userType;
+        this.money = money;
     }
 
-    public User(int id, String name , String password , int userType){
+    public User(int id, String name , String password , int userType , double money){
         this.id = id;
         this.name = name;
         this.password = password;
         this.userType = userType;
+        this.money = money;
     }
 
    
@@ -65,11 +68,12 @@ public abstract class User {
     public void AddToDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "INSERT INTO User(name , password , userType) VALUES( ? , ? , ? )";
+            String sql = "INSERT INTO User(name , password , userType , money) VALUES( ? , ? , ? , ?)";
             PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, this.name);
             pst.setString(2, this.password);
             pst.setInt(3, this.userType);
+            pst.setDouble(4, this.money);
 
 
             pst.executeUpdate();

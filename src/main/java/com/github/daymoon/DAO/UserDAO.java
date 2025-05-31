@@ -14,7 +14,7 @@ public class UserDAO {
         ArrayList<User> users = new ArrayList<>();
 
 
-        String sql = "SELECT id, name, password , userType FROM User";
+        String sql = "SELECT id, name , password , userType , money FROM User";
 
         try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -26,8 +26,9 @@ public class UserDAO {
                     String name = rs.getString("name");
                     String password = rs.getString("password");
                     int userType = rs.getInt("userType");
+                    double money = rs.getDouble("money");
 
-                    User user = new MarketUser(id , name , password, userType);
+                    User user = new MarketUser(id , name , password, userType , money);
                     users.add(user);
                 }
 
@@ -42,7 +43,7 @@ public class UserDAO {
         User user = null;
 
 
-        String sql = "SELECT id, name, password , userType FROM User WHERE id = ?";
+        String sql = "SELECT id, name , password , userType , money FROM User WHERE id = ?";
 
         try(Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)){
@@ -55,8 +56,10 @@ public class UserDAO {
                     String name = rs.getString("name");
                     String password = rs.getString("password");
                     int userType = rs.getInt("userType");
+                    double money = rs.getDouble("money");
 
-                    user = new MarketUser(id ,name, password , userType);
+
+                    user = new MarketUser(id ,name, password , userType , money);
                 }
 
             }catch(Exception e){

@@ -21,12 +21,12 @@ public class MarketUser extends User {
         this.totalProductsSelled = totalProductsSelled;
     }
 
-    public MarketUser(String name , String password , int userType){
-        super(name , password , userType);
+    public MarketUser(String name , String password , int userType , double money){
+        super(name , password , userType , money);
     }
 
-    public MarketUser(int id, String name, String password , int userType) {
-        super(id, name, password , userType);
+    public MarketUser(int id, String name, String password , int userType , double money) {
+        super(id, name, password , userType ,money);
     }
 
 

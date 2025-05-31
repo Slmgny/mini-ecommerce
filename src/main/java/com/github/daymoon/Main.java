@@ -195,6 +195,7 @@ public class Main {
             case "5":
             AppSession.previousPage = pagenumber;
             AddProductPage();
+            break;
             case "6":
             AppSession.previousPage = 1;
             System.out.println("Logging out...");
@@ -236,13 +237,15 @@ public class Main {
         AppSession.currentPage = pagenumber;
         System.out.println("=== CART ===");
         getUserCart();
-        System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Remove From Cart \n");
+        System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
         int input = readIntInput("");
         switch (input){
             case 1:
-
+            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId , products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                p.AddToDataBase();
+            }
         }
-
     }
 
     //Purchases Page
@@ -250,6 +253,9 @@ public class Main {
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PURCHASE HISTORY ===");
+        getPurchaseHistory();
+        System.out.println("Type 'menu'to go back to the main menu: ");;
+        readInput("");
     }
 
     //Add Product Page
@@ -275,11 +281,8 @@ public class Main {
             productList.add(product);
             System.out.println("Product Added!");
             System.out.println("You can type 'help' to see the available commands");
-            readInput("Type 'menu' if you want to go to the main menu: ");
-            
+            readInput("Type 'menu'to go back to the main menu: ");
         }
-        
-        
     }
 
 
@@ -391,19 +394,24 @@ public class Main {
 
     //User's Cart List
     public void getUserCart(){
-        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amounth");
-        for(Cart c: cartList){
-            System.out.printf("%-10d %-20s %-10.2f %-10d\n", products.getProductById(c.getProductId()).getId(),
-            products.getProductById(c.getProductId()).getName(), products.getProductById(c.getProductId()).getPrice() , c.getAmount());
+        double totalPrice = 0;
+        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount");
+        for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+            Product prod = products.getProductById(c.getProductId());
+            System.out.printf("%-10d %-20s %-10.2f %-10d\n", c.getProductId(),
+            prod.getName(), prod.getPrice() , c.getAmount());
+            totalPrice += prod.getPrice();
+            System.out.println("Total: " + totalPrice + " $");
         }
     }
 
     //Purchase History
     public void getPurchaseHistory(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s\n", "Id" , "Name", "Price" , "Amounth" , "Seller");
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount" , "Seller");
         for(Purchase p: purchaseList){
-            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s\n", products.getProductById(p.getProductId()).getId(),
-            products.getProductById(p.getProductId()).getName(), products.getProductById(p.getProductId()).getPrice() , p.getAmount() ,
+            Product prod = products.getProductById(p.getProductId());
+            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s\n", p.getProductId(),
+            prod.getName(), prod.getPrice() , p.getAmount() ,
             users.getUserById(p.getSellerId()).getName());
             
         }
