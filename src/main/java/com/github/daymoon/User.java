@@ -58,12 +58,33 @@ public abstract class User {
         this.userType = userType;
     }
 
+    public double getMoney() {
+        return money;
+    }
+
+    public void setMoney(double money) {
+        this.money = money;
+    }
+
+
+    // Login & Logout
     public void login(){
         System.out.println(name + "Logged in");
     }
     public void logout(){
         System.out.println(name + "Logged out");
     }
+
+
+    // Wallet
+    public void depositMoney(double depositMoney){
+        this.money =+ depositMoney;
+    }
+    public void Pay(double pay){
+        this.money =- pay;
+        System.out.println("New balance: " + this.money);
+    }
+
 
     public void AddToDataBase(){
 
@@ -87,4 +108,6 @@ public abstract class User {
         }
 
     }
+
+    
 }

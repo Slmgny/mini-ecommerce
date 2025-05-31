@@ -141,7 +141,7 @@ public class Main {
             while(!isPasswordValid(password)){
                 password = readInput("Create Your Password: ");
             }
-            User user = new MarketUser(userName , password , 1);
+            User user = new MarketUser(userName , password , 1 , 0);
             user.AddToDataBase();
             userList.add(user);
             AppSession.currentUser = user;
@@ -168,11 +168,12 @@ public class Main {
         System.out.println("=== MAİN MENU ===");
         System.out.println("1. Market");
         System.out.println("2. Profile");
-        System.out.println("3. Cart");
-        System.out.println("4. Purchases");
-        System.out.println("5. Add Your Product");
-        System.out.println("6. Logout");
-        System.out.println("7. Exit");
+        System.out.println("3. Wallet");
+        System.out.println("4. Cart");
+        System.out.println("5. Purchases");
+        System.out.println("6. Add Your Product");
+        System.out.println("7. Logout");
+        System.out.println("8. Exit");
         System.out.println("You can type 'help' to see the available commands");
         String input = readInput("Select an option: ");
         switch (input){
@@ -186,24 +187,28 @@ public class Main {
             break;
             case "3":
             AppSession.previousPage = pagenumber;
-            cartPage();
+            walletPage();
             break;
             case "4":
             AppSession.previousPage = pagenumber;
-            purchasesPage();
+            cartPage();
             break;
             case "5":
             AppSession.previousPage = pagenumber;
-            AddProductPage();
+            purchasesPage();
             break;
             case "6":
+            AppSession.previousPage = pagenumber;
+            AddProductPage();
+            break;
+            case "7":
             AppSession.previousPage = 1;
             System.out.println("Logging out...");
             AppSession.currentUser=null;
             AppSession.currentUserId = -1;
             LoginOrSignUpPage();
             break;
-            case "7":
+            case "8":
             System.exit(0);
             break;
 
@@ -218,6 +223,12 @@ public class Main {
         System.out.println("=== MARKET ===");
         getAllProducts();
         int input = readIntInput("Enter Product Id: ");
+        for(Product p: productList){
+            if(input == p.getId()){
+                System.out.printf("%-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
+                readIntInput("Select an option: ");
+            }
+        }
     }
 
     //Profile Page
@@ -231,10 +242,17 @@ public class Main {
 
     }
 
-    //Cart Page
-    public void cartPage(){
+    //Wallet Page
+    public void walletPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
+    }
+
+    //Cart Page
+    public void cartPage(){
+        int pagenumber = 6;
+        AppSession.currentPage = pagenumber;
+        double totalPrice = 0;
         System.out.println("=== CART ===");
         getUserCart();
         System.out.printf("%10s %10s %10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
@@ -242,15 +260,32 @@ public class Main {
         switch (input){
             case 1:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                totalPrice += products.getProductById(c.getProductId()).getPrice();
+            }
+            if(totalPrice > AppSession.currentUser.getMoney()){
+                System.out.println("Failed to Purchase. Insufficient balance");
+                cartPage();
+                break;
+            }else{
+                for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
                 Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId , products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
                 p.AddToDataBase();
+                purchaseList.add(p);
             }
+            System.out.println("Thank you! Items in your cart have been purchased.");
+            System.out.println("Total: " + totalPrice + "$");
+            AppSession.currentUser.Pay(totalPrice);
+            cartPage();
+            break;
+            }
+
+
         }
     }
 
     //Purchases Page
     public void purchasesPage(){
-        int pagenumber = 6;
+        int pagenumber = 7;
         AppSession.currentPage = pagenumber;
         System.out.println("=== PURCHASE HISTORY ===");
         getPurchaseHistory();
@@ -260,7 +295,7 @@ public class Main {
 
     //Add Product Page
     public void AddProductPage(){
-        int pagenumber = 7;
+        int pagenumber = 8;
         AppSession.currentPage = pagenumber;
         String pName;
         String pDesc;
