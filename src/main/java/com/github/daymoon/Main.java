@@ -93,9 +93,6 @@ public class Main {
                 break;
             }
             break;
-            default:
-            System.out.println("Please select valid option");
-            break;
         }
         
         return input;
@@ -255,19 +252,24 @@ public class Main {
         int input = readIntInput("Enter Product Id: ");
         for(Product p: productList){
             if(input == p.getId()){
-                int pAmount = readIntInput("Enter Amount: ");
-                double price = p.getPrice() * pAmount;
                 System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
                 System.out.printf("%-10s %-10s %-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
                 int input2 = readIntInput("Select an option: ");
                 switch (input2){
                     case 1:
+                    int pAmount = readIntInput("Enter Amount: ");
+                    double price = p.getPrice() * pAmount;
                     if(!canBuy(price)){
                         marketPage();
                         break;
                     }else{
                         AppSession.currentUser.Pay(price);
                         Purchase pur = new Purchase(pAmount , AppSession.currentUserId , p.getSellerId() , p.getId());
+                        p.SellProduct();
+                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
+                        users.getUserById(p.getSellerId()).depositMoney(price);
+                        p.SellProduct();
+                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
                         pur.AddToDataBase();
                         purchaseList.add(pur);
                         marketPage();
@@ -462,10 +464,14 @@ public class Main {
                     break;
                 }else{
                     for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                    Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                    Purchase pur = new Purchase(c.getAmount() , AppSession.currentUserId ,
                     products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                    p.AddToDataBase();
-                    purchaseList.add(p);
+                    pur.AddToDataBase();
+                    Product p = products.getProductById(pur.getProductId()); 
+                    p.SellProduct();
+                    p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
+                    users.getUserById(pur.getSellerId()).depositMoney(products.getProductById(pur.getProductId()).getPrice() * pur.getAmount());
+                    purchaseList.add(pur);
                     c.DeleteFromDataBase();
                     cartList.remove(c);
                 }
@@ -499,6 +505,7 @@ public class Main {
                                     Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
                                     products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
                                     p.AddToDataBase();
+                                    users.getUserById(p.getSellerId()).depositMoney(products.getProductById(p.getProductId()).getPrice() * p.getAmount());
                                     purchaseList.add(p);
                                     c.DeleteFromDataBase();
                                     cartList.remove(c);
@@ -619,22 +626,28 @@ public class Main {
                             Product prod = products.getProductById(f.getProductId());
                             System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
                             prod.getName(), prod.getPrice());
-                            System.out.printf("" , " 1. Add to Cart " , " 2. Remove from Favorites ");
-                            int option = readIntInput("Select an option: ");
-                            switch (option){
-                                case 1:
-                                int amount = readIntInput("Enter the amount: ");
-                                Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
-                                c.AddToDataBase();
-                                cartList.add(c);
-                                favoritesPage();
-                                break;
-                                case 2:
-                                f.DeleteFromDataBase();
-                                favoritesList.remove(f);
-                                favoritesPage();
-                                break;
+                            while(true){
+                                System.out.printf("" , " 1. Add to Cart " , " 2. Remove from Favorites ");
+                                int option = readIntInput("Select an option: ");
+                                switch (option){
+                                    case 1:
+                                    int amount = readIntInput("Enter the amount: ");
+                                    Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
+                                    c.AddToDataBase();
+                                    cartList.add(c);
+                                    favoritesPage();
+                                    break;
+                                    case 2:
+                                    f.DeleteFromDataBase();
+                                    favoritesList.remove(f);
+                                    favoritesPage();
+                                    break;
+                                    default:
+                                    System.out.println("Please select valid option");
+                                    break;
+                                }
                             }
+                            
                         }
                     }
                     break;
