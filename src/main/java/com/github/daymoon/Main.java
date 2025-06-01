@@ -3,9 +3,6 @@ package com.github.daymoon;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.SpringLayout;
-import javax.xml.parsers.FactoryConfigurationError;
-
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.FavoritesDAO;
 import com.github.daymoon.DAO.ProductDAO;
@@ -124,8 +121,7 @@ public class Main {
 
     
     public void run(){
-        boolean closeApp = false;
-        while(!closeApp){
+        while(true){
             System.out.println("Welcome to Mini E-Commerce App");
             LoginOrSignUpPage();
         }
@@ -139,7 +135,7 @@ public class Main {
         AppSession.currentPage = pagenumber;
         System.out.println("=== LOG IN OR SIGN UP ===");
         System.out.println("You can type 'help' to see the available commands");
-        String userName = readInput("Name: ");
+        String userName = AskName();
         Boolean newUser = true;
         for(User u: userList){
             if(u.getName().equals(userName)){
@@ -254,6 +250,7 @@ public class Main {
                         Purchase pur = new Purchase(pAmount , AppSession.currentUserId , p.getSellerId() , p.getId());
                         pur.AddToDataBase();
                         purchaseList.add(pur);
+                        marketPage();
                     }
                     break;
                     case 2:
@@ -269,6 +266,7 @@ public class Main {
                     f.AddToDataBase();
                     favoritesList.add(f);
                     System.out.println("Successfully Added to Your Favorites");
+                    marketPage();
                     break;
                 }
             }
@@ -284,6 +282,46 @@ public class Main {
         System.out.println("2. Change Password");
         System.out.println("3. View Your Products");
         System.out.println("4. View Your Favorites");
+        int input = readIntInput("Select an option: ");
+        switch (input){
+            case 1:
+            String password = readInput("Enter Your Password: ");
+            while(!isPasswordCorrect(password)){
+                System.out.println("Wrong Password!");
+                password = readInput("Enter Your Password: ");
+            }
+            String newName = AskName();
+            AppSession.currentUser.setName(newName);
+            profilePage();
+            break;
+            case 2:
+            String password2 = readInput("Enter Your Password: ");
+            while(!isPasswordCorrect(password2)){
+                System.out.println("Wrong Password!");
+                password2 = readInput("Enter Your Password: ");
+            }
+            String newPassword = readInput("Enter Your New Password");
+            while(!isPasswordValid(newPassword)){
+                newPassword = readInput("Enter Your New Password");
+            }
+            AppSession.currentUser.setPassword(newPassword);
+            profilePage();
+            break;
+            case 3:
+            getUsersProducts();
+            System.out.printf("%-10s %-10s" , " 1. Edit Product " , " 2. Go Back ");
+            int i = readIntInput("Select an option: ");
+            switch (i){
+                case 1:
+
+                break;
+                case 2:
+                break;
+            }
+            break;
+            case 4:
+            break;
+        }
 
     }
 
@@ -300,6 +338,7 @@ public class Main {
             case 1:
             double deposit = readIntInput("Deposit amount: ");
             AppSession.currentUser.depositMoney(deposit);
+            walletPage();
             break;
             case 2:
             mainPage();
@@ -312,6 +351,7 @@ public class Main {
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
         double totalPrice = 0;
+        int totalItemsInCart = 0;
         System.out.println("=== CART ===");
         getUserCart();
         System.out.printf("%-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
@@ -319,8 +359,13 @@ public class Main {
         switch (input){
             case 1:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                
                 totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
+                totalItemsInCart++;
+            }
+            if(totalItemsInCart == 0){
+                System.out.println("Cart Is Empty");
+                cartPage();
+                break;
             }
             if(!canBuy(totalPrice)){
                 cartPage();
@@ -343,12 +388,20 @@ public class Main {
             case 2:
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
                 c.DeleteFromDataBase();
+                totalItemsInCart++;
+            }
+            if(totalItemsInCart == 0){
+                System.out.println("Cart Is Empty");
+                cartPage();
+                break;
             }
             System.out.println("Products Successfully Deleted! From Cart");
+            cartPage();
             break;
             case 3:
             int i = readIntInput("Enter Product ID: ");
             for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                totalItemsInCart++;
                 if(c.getProductId() == i){
                     System.out.printf("%-10s %-10s" , " 1.Buy " , " 2.Remove ");
                     int inp = readIntInput("Select an option: ");
@@ -367,7 +420,13 @@ public class Main {
                         break;
                     }
                 }
+                if(totalItemsInCart == 0){
+                System.out.println("Cart Is Empty");
+                cartPage();
+                break;
             }
+            }
+            cartPage();
             break;
 
 
@@ -395,6 +454,7 @@ public class Main {
                         double price = products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
                         AppSession.currentUser.depositMoney(price);
                         pur.DeleteFromDataBase();
+                        purchasesPage();
                         break;
                         case 2:
                         purchasesPage();
@@ -441,7 +501,6 @@ public class Main {
     public void favoritesPage(){
         int pagenumber = 9;
         AppSession.currentPage = pagenumber;
-        double totalPrice = 0;
         System.out.println("=== FAVORITES ===");
         getFavorites();
         System.out.printf("%-10s %-10s %-10s " , "1. Select Item" , "2. Remove All" , "3. Add All to Cart" , " \n");
@@ -464,7 +523,7 @@ public class Main {
                         cartList.add(c);
                         favoritesPage();
                         break;
-
+                        
                         case 2:
                         f.DeleteFromDataBase();
                         favoritesList.remove(f);
@@ -487,6 +546,7 @@ public class Main {
                 c.AddToDataBase();
                 cartList.add(c);
             }
+            cartPage();
             break;
 
         }      
@@ -512,11 +572,32 @@ public class Main {
         while(!isCorrect){
             String name = readInput("Name: ");
             if(name.length() < 4){
-                System.out.println("Your Name must be at least 4 characters");
+                System.out.println("User Name must be at least 4 characters");
                 continue;
         }
             if(!name.matches(".*[a-zA-Z].*")){
-                System.out.println("Your Name Must contain at least 1 letter");
+                System.out.println("User Name Must contain at least 1 letter");
+                continue;
+        }
+            isCorrect = true;
+            return name;
+        }
+        return null;
+
+    }
+
+    //Product Name
+    public String AskProductName(){
+
+        Boolean isCorrect = false;
+        while(!isCorrect){
+            String name = readInput("Name: ");
+            if(name.length() < 4){
+                System.out.println("Product Name must be at least 4 characters");
+                continue;
+        }
+            if(!name.matches(".*[a-zA-Z].*")){
+                System.out.println("Product Name Must contain at least 1 letter");
                 continue;
         }
         isCorrect = true;
@@ -588,7 +669,6 @@ public class Main {
 
     
 
-
     public static Boolean canBuy(double totalPrice){
         if(AppSession.currentUser.getMoney() < totalPrice){
             System.out.println("Failed to Purchase. Insufficient balance");
@@ -598,8 +678,6 @@ public class Main {
     }
 
 
-
-
     //LISTS
 
     //Product List
@@ -607,6 +685,15 @@ public class Main {
         System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description");
         for(Product p: productList){
             System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
+        }
+    }
+
+    //User's Product List
+    public void getUsersProducts(){
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s %10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description");
+        for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
+            System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
+            , p.getSellCount(),p.getDescription());
         }
     }
 
@@ -625,12 +712,12 @@ public class Main {
 
     //Purchase History
     public void getPurchaseHistory(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount" , "Seller");
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-15\n", "Id" , "Name", "Price" , "Amount" , "Seller" , "Date");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
-            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s\n", p.getProductId(),
+            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s %-15s\n", p.getProductId(),
             prod.getName(), prod.getPrice() , p.getAmount() ,
-            users.getUserById(p.getSellerId()).getName());
+            users.getUserById(p.getSellerId()).getName() , p.getDateString());
             
         }
     }
