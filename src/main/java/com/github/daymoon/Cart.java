@@ -82,4 +82,21 @@ public class Cart {
         }
 
     }
+
+    public boolean updateCartProduct(int amount) {
+        String sql = "UPDATE Product SET amount = ? WHERE productId = ?;";
+
+        try (Connection conn = DBConnection.connect();
+            PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, amount);
+
+            int updated = pst.executeUpdate();
+            return updated > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

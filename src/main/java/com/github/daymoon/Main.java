@@ -313,7 +313,31 @@ public class Main {
             int i = readIntInput("Select an option: ");
             switch (i){
                 case 1:
-
+                int inp = readIntInput("Enter Product ID: ");
+                for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
+                    if(inp == p.getId()){
+                        System.out.printf("%-10s %-10s %-10s %-10s" , " 1. Change Name " , " 2. Change Price " , " 3. Change Stock ", " 4. Change Description ");
+                        int option = readIntInput("Select an option: ");
+                        switch (option){
+                            case 1:
+                            String newProductName = AskProductName();
+                            p.setName(newProductName);
+                            p.updateProduct(newName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
+                            profilePage();
+                            break;
+                            case 2:
+                            profilePage();
+                            break;
+                            case 3:
+                            profilePage();
+                            break;
+                            case 4:
+                            profilePage();
+                            break;
+                            
+                        }
+                    }
+                }
                 break;
                 case 2:
                 break;
@@ -591,7 +615,7 @@ public class Main {
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            String name = readInput("Name: ");
+            String name = readInput("Enter Product Name: ");
             if(name.length() < 4){
                 System.out.println("Product Name must be at least 4 characters");
                 continue;

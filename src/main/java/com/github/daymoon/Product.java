@@ -98,25 +98,25 @@ public class Product {
 
     //Data Base
     public void AddToDataBase(){
-    try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-        String sql = "INSERT INTO Product(name, price, stock, sellCount, sellerId , description) VALUES(?, ?, ?, ?, ?, ?)";
-        PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
-        pst.setString(1, this.name);
-        pst.setDouble(2, this.price);
-        pst.setInt(3, this.stock);
-        pst.setInt(4, this.sellCount);
-        pst.setInt(5, this.sellerId);
-        pst.setString(6, this.description);
-        pst.executeUpdate();
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "INSERT INTO Product(name, price, stock, sellCount, sellerId , description) VALUES(?, ?, ?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
+            pst.setString(1, this.name);
+            pst.setDouble(2, this.price);
+            pst.setInt(3, this.stock);
+            pst.setInt(4, this.sellCount);
+            pst.setInt(5, this.sellerId);
+            pst.setString(6, this.description);
+            pst.executeUpdate();
 
-        ResultSet rs = pst.getGeneratedKeys();
-        if(rs.next()){
-            this.id = rs.getInt(1);
+            ResultSet rs = pst.getGeneratedKeys();
+            if(rs.next()){
+                this.id = rs.getInt(1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
-    }catch(Exception e){
-        e.printStackTrace();
     }
-}
 
 
     public void DeleteFromDataBase(){
@@ -141,6 +141,27 @@ public class Product {
     }
 
     
+    public boolean updateProduct(String name, double price, int sellCount, int stock , String description) {
+        String sql = "UPDATE Product SET name = ? , price = ? , sellCount = ? , stock = ? , description = ? WHERE productId = ?;";
+
+        try (Connection conn = DBConnection.connect();
+            PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, name);
+            pst.setDouble(2, price);
+            pst.setInt(3, sellCount);
+            pst.setInt(4, stock);
+            pst.setString(5, description);
+
+            int updated = pst.executeUpdate();
+            return updated > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     
 }
