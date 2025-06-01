@@ -107,6 +107,17 @@ public class Main {
             }
         }
     }
+    
+    private double readDoubleInput(String prompt) {
+        while (true) {
+            String input = readInput(prompt);
+            try {
+                return Double.parseDouble(input);
+            }catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number:");
+            }
+        }
+    }
 
 
     private void init(){
@@ -318,14 +329,18 @@ public class Main {
                     if(inp == p.getId()){
                         System.out.printf("%-10s %-10s %-10s %-10s" , " 1. Change Name " , " 2. Change Price " , " 3. Change Stock ", " 4. Change Description ");
                         int option = readIntInput("Select an option: ");
-                        switch (option){
+                        switch (option){        //Birşeyi editledikten sonra yine edit menüsüne dönsün
                             case 1:
                             String newProductName = AskProductName();
                             p.setName(newProductName);
-                            p.updateProduct(newName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
+                            p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
                             profilePage();
                             break;
                             case 2:
+                            double newPrice = AskPrice();
+                            p.setPrice(newPrice);
+                            p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
+
                             profilePage();
                             break;
                             case 3:
@@ -632,11 +647,11 @@ public class Main {
     }
 
     //Price
-    public int AskPrice(){
+    public double AskPrice(){
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            int price = readIntInput("Price: ");
+            double price = readDoubleInput("Price: ");
             if(price <= 0){
                 System.out.println("Price cant be lower that 0");
                 continue;
