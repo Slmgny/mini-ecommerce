@@ -327,11 +327,12 @@ public class Main {
                     System.out.println("Wrong Password!");
                     password2 = readInput("Enter Your Password: ");
                 }
-                String newPassword = readInput("Enter Your New Password");
+                String newPassword = readInput("Enter Your New Password: ");
                 while(!isPasswordValid(newPassword)){
-                    newPassword = readInput("Enter Your New Password");
+                    newPassword = readInput("Enter Your New Password: ");
                 }
                 AppSession.currentUser.setPassword(newPassword);
+                AppSession.currentUser.updateUser(AppSession.currentUser.getName(), newPassword, AppSession.currentUser.getMoney())
                 profilePage();
                 break;
                 case 3:
@@ -592,6 +593,7 @@ public class Main {
 
         System.out.println("=== ADD PRODUCT ===");
         System.out.println("You have to enter your Products Name , Price , Stock and (Optional) Description");
+        System.out.println("You can type 'help' to see the available commands");
         while(true){
             pName = AskName();
             pPrice = AskPrice();
@@ -603,8 +605,7 @@ public class Main {
             product.AddToDataBase();
             productList.add(product);
             System.out.println("Product Added!");
-            System.out.println("You can type 'help' to see the available commands");
-            readInput("Type 'menu'to go back to the main menu: ");
+            readInput("Type 'menu'to go back to the main menu or press Enter to add another product: ");
         }
     }
 

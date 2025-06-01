@@ -17,8 +17,6 @@ public class Product {
         this.price = price;
         this.stock = stock;
         this.description = description;
-
-        AddToDataBase();
     }
     
     public Product(int id,String name, double price, int sellCount, int stock , int sellerId , String description) {

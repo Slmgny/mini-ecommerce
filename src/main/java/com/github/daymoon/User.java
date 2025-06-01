@@ -111,5 +111,43 @@ public abstract class User {
 
     }
 
+    public void DeleteFromDataBase(){
+
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+            String sql = "DELETE FROM User WHERE id  = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, this.id);
+
+            int deleted = pst.executeUpdate();
+
+            if(deleted>0){
+            }else{
+                System.out.println("Failed to Find the User");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean updateUser(String name,  String password , double money) {
+        String sql = "UPDATE User SET name = ? , password = ?  , money = ? WHERE id = ?;";
+
+        try (Connection conn = DBConnection.connect();
+            PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, name);
+            pst.setString(2, password);
+            pst.setDouble(3, money);
+
+            int updated = pst.executeUpdate();
+            return updated > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
 }
