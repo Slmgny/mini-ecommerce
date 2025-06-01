@@ -325,43 +325,71 @@ public class Main {
             switch (i){
                 case 1:
                 int inp = readIntInput("Enter Product ID: ");
+                boolean found = false;
                 for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
                     if(inp == p.getId()){
-                        System.out.printf("%-10s %-10s %-10s %-10s" , " 1. Change Name " , " 2. Change Price " , " 3. Change Stock ", " 4. Change Description ");
-                        int option = readIntInput("Select an option: ");
-                        switch (option){        //Birşeyi editledikten sonra yine edit menüsüne dönsün
-                            case 1:
-                            String newProductName = AskProductName();
-                            p.setName(newProductName);
-                            p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
-                            profilePage();
-                            break;
-                            case 2:
-                            double newPrice = AskPrice();
-                            p.setPrice(newPrice);
-                            p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
-
-                            profilePage();
-                            break;
-                            case 3:
-                            profilePage();
-                            break;
-                            case 4:
-                            profilePage();
-                            break;
-                            
-                        }
+                        found = true;
+                        while(true){
+                            System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
+                            , p.getSellCount(),p.getDescription());
+                            System.out.printf("%-10s %-10s %-10s %-10s" , " 1. Change Name " , " 2. Change Price " 
+                            , " 3. Change Stock ", " 4. Change Description " , " 5. Exit");
+                            int option = readIntInput("Select an option: ");
+                            switch (option){        //Birşeyi editledikten sonra yine edit menüsüne dönsün
+                                case 1:
+                                String newProductName = AskProductName();
+                                p.setName(newProductName);
+                                p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
+                                profilePage();
+                                break;
+                                case 2:
+                                double newPrice = AskPrice();
+                                p.setPrice(newPrice);
+                                p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
+                                profilePage();
+                                break;
+                                case 3:
+                                int stock = AskStock();
+                                p.setStock(stock);
+                                p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , stock , p.getDescription());
+                                profilePage();
+                                break;
+                                case 4:
+                                String desc = readInput("Enter new Description");
+                                p.setDescription(desc);
+                                p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , p.getStock() , desc);
+                                profilePage();
+                                break;
+                                case 5:
+                                profilePage();
+                                break;
+                                default:
+                                System.out.println("Please select valid option");
+                                break;
+                            }
+                        }  
                     }
+                }
+                if(!found){
+                    System.out.println("Product not found");
+                    break;
                 }
                 break;
                 case 2:
+                profilePage();
+                break;
+                default:
+                System.out.println("Please select valid option");
                 break;
             }
             break;
             case 4:
+            favoritesPage();
+            break;
+            default:
+            System.out.println("Please select valid option");
             break;
         }
-
     }
 
     //Wallet Page
@@ -373,16 +401,22 @@ public class Main {
         System.out.println("1. Deposit Money");
         System.out.println("2. Main Menu");
         int input = readIntInput("Select an option: ");
-        switch (input){
-            case 1:
-            double deposit = readIntInput("Deposit amount: ");
-            AppSession.currentUser.depositMoney(deposit);
-            walletPage();
-            break;
-            case 2:
-            mainPage();
-            break;
+        while(true){
+            switch (input){
+                case 1:
+                double deposit = readIntInput("Deposit amount: ");
+                AppSession.currentUser.depositMoney(deposit);
+                walletPage();
+                break;
+                case 2:
+                mainPage();
+                break;
+                default:
+                System.out.println("Please select valid option");
+                break;
+            }
         }
+        
     }
 
     //Cart Page
@@ -392,83 +426,80 @@ public class Main {
         double totalPrice = 0;
         int totalItemsInCart = 0;
         System.out.println("=== CART ===");
-        getUserCart();
-        System.out.printf("%-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item \n");
-        int input = readIntInput("Select an option: ");
-        switch (input){
-            case 1:
-            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
-                totalItemsInCart++;
-            }
-            if(totalItemsInCart == 0){
-                System.out.println("Cart Is Empty");
-                cartPage();
-                break;
-            }
-            if(!canBuy(totalPrice)){
-                cartPage();
-                break;
-            }else{
+        while(true){
+            getUserCart();
+            System.out.printf("%-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item" , "4. Exit\n");
+            int input = readIntInput("Select an option: ");
+            switch (input){
+                case 1:
                 for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
-                products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                p.AddToDataBase();
-                purchaseList.add(p);
-                c.DeleteFromDataBase();
-                cartList.remove(c);
-            }
-            System.out.println("Thank you! Items in your cart have been purchased.");
-            System.out.println("Total: " + totalPrice + "$");
-            AppSession.currentUser.Pay(totalPrice);
-            cartPage();
-            break;
-            }
-            case 2:
-            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                c.DeleteFromDataBase();
-                totalItemsInCart++;
-            }
-            if(totalItemsInCart == 0){
-                System.out.println("Cart Is Empty");
-                cartPage();
-                break;
-            }
-            System.out.println("Products Successfully Deleted! From Cart");
-            cartPage();
-            break;
-            case 3:
-            int i = readIntInput("Enter Product ID: ");
-            for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                totalItemsInCart++;
-                if(c.getProductId() == i){
-                    System.out.printf("%-10s %-10s" , " 1.Buy " , " 2.Remove ");
-                    int inp = readIntInput("Select an option: ");
-                    switch (inp){
-                        case 1:
-                        
-                        Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
-                        products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                        p.AddToDataBase();
-                        purchaseList.add(p);
-                        c.DeleteFromDataBase();
-                        cartList.remove(c);
-                        break;
-                        case 2:
-                        c.DeleteFromDataBase();
-                        break;
-                    }
+                    totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
+                    totalItemsInCart++;
                 }
                 if(totalItemsInCart == 0){
-                System.out.println("Cart Is Empty");
+                    System.out.println("Cart Is Empty");
+                    break;
+                }
+                if(!canBuy(totalPrice)){
+                    break;
+                }else{
+                    for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                    Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                    products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                    p.AddToDataBase();
+                    purchaseList.add(p);
+                    c.DeleteFromDataBase();
+                    cartList.remove(c);
+                }
+                System.out.println("Thank you! Items in your cart have been purchased.");
+                System.out.println("Total: " + totalPrice + "$");
+                AppSession.currentUser.Pay(totalPrice);
+                break;
+                }
+                case 2:
+                for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                    c.DeleteFromDataBase();
+                    totalItemsInCart++;
+                }
+                if(totalItemsInCart == 0){
+                    System.out.println("Cart Is Empty");
+                    break;
+                }
+                System.out.println("Products Successfully Deleted! From Cart");
+                break;
+                case 3:
+                int i = readIntInput("Enter Product ID: ");
+                for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                    totalItemsInCart++;
+                    if(c.getProductId() == i){
+                        System.out.printf("%-10s %-10s" , " 1.Buy " , " 2.Remove ");
+                        int inp = readIntInput("Select an option: ");
+                        switch (inp){
+                            case 1:
+                            
+                            Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
+                            products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
+                            p.AddToDataBase();
+                            purchaseList.add(p);
+                            c.DeleteFromDataBase();
+                            cartList.remove(c);
+                            break;
+                            case 2:
+                            c.DeleteFromDataBase();
+                            break;
+                        }
+                    }
+                    if(totalItemsInCart == 0){
+                    System.out.println("Cart Is Empty");
+                    cartPage();
+                    break;
+                }
+                }
                 cartPage();
                 break;
-            }
-            }
-            cartPage();
-            break;
 
 
+            }
         }
     }
 
@@ -515,7 +546,7 @@ public class Main {
         AppSession.currentPage = pagenumber;
         String pName;
         String pDesc;
-        int pPrice;
+        double pPrice;
         int pStock;
 
         System.out.println("=== ADD PRODUCT ===");
