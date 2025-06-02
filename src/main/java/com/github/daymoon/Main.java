@@ -264,10 +264,12 @@ public class Main {
                         break;
                     }else{
                         AppSession.currentUser.Pay(price);
+                        AppSession.currentUser.updateUser(AppSession.currentUser.getName(), AppSession.currentUser.getPassword(), AppSession.currentUser.getMoney());
                         Purchase pur = new Purchase(pAmount , AppSession.currentUserId , p.getSellerId() , p.getId());
                         p.SellProduct();
                         p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
                         users.getUserById(p.getSellerId()).depositMoney(price);
+                        users.getUserById(p.getSellerId()).updateUser(users.getUserById(p.getSellerId()).getName(), users.getUserById(p.getSellerId()).getPassword(), users.getUserById(p.getSellerId()).getMoney());
                         p.SellProduct();
                         p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
                         pur.AddToDataBase();
@@ -332,7 +334,7 @@ public class Main {
                     newPassword = readInput("Enter Your New Password: ");
                 }
                 AppSession.currentUser.setPassword(newPassword);
-                AppSession.currentUser.updateUser(AppSession.currentUser.getName(), newPassword, AppSession.currentUser.getMoney())
+                AppSession.currentUser.updateUser(AppSession.currentUser.getName(), newPassword, AppSession.currentUser.getMoney());
                 profilePage();
                 break;
                 case 3:
@@ -427,6 +429,7 @@ public class Main {
                 case 1:
                 double deposit = readIntInput("Deposit amount: ");
                 AppSession.currentUser.depositMoney(deposit);
+                AppSession.currentUser.updateUser(AppSession.currentUser.getName(), AppSession.currentUser.getPassword(), AppSession.currentUser.getMoney());
                 walletPage();
                 break;
                 case 2:
@@ -443,98 +446,53 @@ public class Main {
     public void cartPage(){
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
-        double totalPrice = 0;
         int totalItemsInCart = 0;
-
+        for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+            totalItemsInCart++;
+        }
         while(true){
             System.out.println("=== CART ===");
-            getUserCart();
-            System.out.printf("%-10s %-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item" , "4. Exit\n");
-            int input = readIntInput("Select an option: ");
-            switch (input){
-                case 1:
-                for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                    totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
-                    totalItemsInCart++;
-                }
-                if(totalItemsInCart == 0){
-                    System.out.println("Cart Is Empty");
+            if(totalItemsInCart == 0){
+                System.out.println("Cart is Empty");
+                readInput("Type 'menu'to go back to the main menu");
+            }else{
+                getUserCart();
+                System.out.printf("%-10s %-10s %-10s %-10s" , "1. Buy All" , "2. Remove All" , "3. Select Item" , "4. Exit\n");
+                int input = readIntInput("Select an option: ");
+                switch (input){
+                    case 1:
+                    buyCart();
                     break;
-                }
-                if(!canBuy(totalPrice)){
-                    break;
-                }else{
+                    case 2:
                     for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                    Purchase pur = new Purchase(c.getAmount() , AppSession.currentUserId ,
-                    products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                    pur.AddToDataBase();
-                    Product p = products.getProductById(pur.getProductId()); 
-                    p.SellProduct();
-                    p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
-                    users.getUserById(pur.getSellerId()).depositMoney(products.getProductById(pur.getProductId()).getPrice() * pur.getAmount());
-                    purchaseList.add(pur);
-                    c.DeleteFromDataBase();
-                    cartList.remove(c);
-                }
-                System.out.println("Thank you! Items in your cart have been purchased.");
-                System.out.println("Total: " + totalPrice + "$");
-                AppSession.currentUser.Pay(totalPrice);
-                break;
-                }
-                case 2:
-                for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-                    c.DeleteFromDataBase();
-                    totalItemsInCart++;
-                }
-                if(totalItemsInCart == 0){
-                    System.out.println("Cart Is Empty");
-                    break;
-                }
-                System.out.println("Products Successfully Deleted! From Cart");
-                break;
-                case 3:
-                while(true){
-                    int i = readIntInput("Enter Product ID: ");
-                    for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
+                        c.DeleteFromDataBase();
                         totalItemsInCart++;
-                        if(c.getProductId() == i){
-                            while(true){
-                                System.out.printf("%-10s %-10s" , " 1.Buy " , " 2.Remove ");
-                                int inp = readIntInput("Select an option: ");
-                                switch (inp){
-                                    case 1:
-                                    Purchase p = new Purchase(c.getAmount() , AppSession.currentUserId ,
-                                    products.getProductById(c.getProductId()).getSellerId() , c.getProductId());
-                                    p.AddToDataBase();
-                                    users.getUserById(p.getSellerId()).depositMoney(products.getProductById(p.getProductId()).getPrice() * p.getAmount());
-                                    purchaseList.add(p);
-                                    c.DeleteFromDataBase();
-                                    cartList.remove(c);
-                                    break;
-                                    case 2:
-                                    c.DeleteFromDataBase();
-                                    break;
-                                    default:
-                                    System.out.println("Please select valid option");
-                                    break;
-                                }
-                            }
-                            
-                        }
-                        if(totalItemsInCart == 0){
+                    }
+                    if(totalItemsInCart == 0){
                         System.out.println("Cart Is Empty");
                         break;
-                        }
                     }
+                    System.out.println("Products Successfully Deleted! From Cart");
+                    break;
+                    case 3:
+                    while(true){
+                        int i = readIntInput("Enter Product ID: ");
+                        for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
+                            Product prod = products.getProductById(c.getProductId());
+                            if(prod.getId() == i){
+                                
+                            }
+                        } 
+                    }
+                    case 4:
+                    mainPage();
+                    return;
+                    default:
+                    System.out.println("Please select valid option");
                     break;
                 }
-                case 4:
-                mainPage();
-                return;
-                default:
-                System.out.println("Please select valid option");
-                break;
             }
+            
         }
     }
 
@@ -854,5 +812,51 @@ public class Main {
             System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
             prod.getName(), prod.getPrice());
         }
+    }
+
+
+
+
+    //Buy Product
+    public void buyProduct(Product p , int amount){
+        double price = p.getPrice() * amount;
+        if(AppSession.currentUser.getMoney() < price){
+            System.out.println("Failed to Purchase. Insufficient balance");
+        }else{
+            Purchase pur = new Purchase(amount, AppSession.currentUserId, p.getSellerId(), p.getId());
+            pur.AddToDataBase();
+            purchaseList.add(pur);
+            p.SellProduct();
+            AppSession.currentUser.Pay(price);
+            users.getUserById(p.getSellerId()).depositMoney(price);
+            System.out.println("Purchase successful! ");
+        }
+    }
+
+    //Buy Cart
+    public void buyCart(){
+        double totalPrice = 0;
+        for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
+            totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
+        }
+        if(totalPrice > AppSession.currentUser.getMoney()){
+            System.out.println("Failed to Purchase. Insufficient balance");
+        }
+        for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
+            Product p = products.getProductById(c.getProductId());
+            User seller = users.getUserById(p.getSellerId());
+            double price = p.getPrice() * c.getAmount();
+            Purchase pur = new Purchase(c.getAmount(), AppSession.currentUserId , p.getSellerId() , p.getId() );
+            pur.AddToDataBase();
+            purchaseList.add(pur);
+            AppSession.currentUser.Pay(price);
+            seller.depositMoney(price);
+            c.DeleteFromDataBase();
+            cartList.remove(c);
+
+        }
+        System.out.println("Successful! Items in your cart have been purchased.");
+        System.out.println("Total Price: " + totalPrice);
+        
     }
 }
