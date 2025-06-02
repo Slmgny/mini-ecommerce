@@ -304,7 +304,7 @@ public class Main {
     public void profilePage(){
         int pagenumber = 4;
         AppSession.currentPage = pagenumber;
-
+        User user = AppSession.currentUser;
         while(true){
             System.out.println("=== PROFILE ===");
             System.out.println("1. Edit Your Name");
@@ -320,7 +320,8 @@ public class Main {
                     password = readInput("Enter Your Password: ");
                 }
                 String newName = AskName();
-                AppSession.currentUser.setName(newName);
+                user.setName(newName);
+                user.updateUser(newName, user.getPassword(), user.getMoney());
                 profilePage();
                 break;
                 case 2:
@@ -333,15 +334,15 @@ public class Main {
                 while(!isPasswordValid(newPassword)){
                     newPassword = readInput("Enter Your New Password: ");
                 }
-                AppSession.currentUser.setPassword(newPassword);
-                AppSession.currentUser.updateUser(AppSession.currentUser.getName(), newPassword, AppSession.currentUser.getMoney());
+                user.setPassword(newPassword);
+                user.updateUser(user.getName(), newPassword, user.getMoney());
                 profilePage();
                 break;
                 case 3:
 
                 while(true){
                     getUsersProducts();
-                    System.out.printf("%-10s %-10s" , " 1. Edit Product " , " 2. Go Back ");
+                    System.out.printf("%-10s %-10s" , " 1. Edit Product " , " 2. Go Back \n");
                     int i = readIntInput("Select an option: ");
                     switch (i){
                         case 1:
@@ -786,7 +787,7 @@ public class Main {
 
     //User's Product List
     public void getUsersProducts(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s %10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description");
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description");
         for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
             System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
             , p.getSellCount(),p.getDescription());
@@ -845,6 +846,7 @@ public class Main {
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println("Purchase successful! ");
         }
+        //Add stock chek
     }
 
     //Buy Cart

@@ -90,6 +90,7 @@ public class Cart {
             PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, amount);
+            pst.setInt(2, productId);
 
             int updated = pst.executeUpdate();
             return updated > 0;

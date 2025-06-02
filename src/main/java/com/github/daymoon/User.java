@@ -147,6 +147,7 @@ public abstract class User {
             pst.setString(1, name);
             pst.setString(2, password);
             pst.setDouble(3, money);
+            pst.setInt(4, id);
 
             int updated = pst.executeUpdate();
             return updated > 0;

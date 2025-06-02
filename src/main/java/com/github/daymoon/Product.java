@@ -141,7 +141,7 @@ public class Product {
 
     
     public boolean updateProduct(String name, double price, int sellCount, int stock , String description) {
-        String sql = "UPDATE Product SET name = ? , price = ? , sellCount = ? , stock = ? , description = ? WHERE productId = ?;";
+        String sql = "UPDATE Product SET name = ? , price = ? , sellCount = ? , stock = ? , description = ? WHERE id = ?;";
 
         try (Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -151,6 +151,7 @@ public class Product {
             pst.setInt(3, sellCount);
             pst.setInt(4, stock);
             pst.setString(5, description);
+            pst.setInt(6, id);
 
             int updated = pst.executeUpdate();
             return updated > 0;
