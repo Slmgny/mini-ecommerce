@@ -253,32 +253,29 @@ public class Main {
         for(Product p: productList){
             if(input == p.getId()){
                 System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
-                System.out.printf("%-10s %-10s %-10s"," 1. Buy " , " 2. Add to Cart " , "Add to Favorites" );
+                System.out.printf("\n%-10s %-10s %-10s"," 1. Buy " , " 2. Add to Cart " , "3. Add to Favorites\n" );
                 int input2 = readIntInput("Select an option: ");
                 switch (input2){
                     case 1:
                     int pAmount = readIntInput("Enter Amount: ");
+                    if(pAmount < 0){
+                        System.out.println("Amount can't be less than 1");
+                        break;
+                    }
                     double price = p.getPrice() * pAmount;
                     if(!canBuy(price)){
                         marketPage();
                         break;
                     }else{
-                        AppSession.currentUser.Pay(price);
-                        AppSession.currentUser.updateUser(AppSession.currentUser.getName(), AppSession.currentUser.getPassword(), AppSession.currentUser.getMoney());
-                        Purchase pur = new Purchase(pAmount , AppSession.currentUserId , p.getSellerId() , p.getId());
-                        p.SellProduct();
-                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
-                        users.getUserById(p.getSellerId()).depositMoney(price);
-                        users.getUserById(p.getSellerId()).updateUser(users.getUserById(p.getSellerId()).getName(), users.getUserById(p.getSellerId()).getPassword(), users.getUserById(p.getSellerId()).getMoney());
-                        p.SellProduct();
-                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount(), p.getStock() , p.getDescription());
-                        pur.AddToDataBase();
-                        purchaseList.add(pur);
-                        marketPage();
+                        buyProduct(p, pAmount);
+                        break;
                     }
-                    break;
                     case 2:
-                    int amount = readIntInput("Enter the Amount");
+                    int amount = readIntInput("Enter the Amount: ");
+                    if(amount < 0){
+                        System.out.println("Amount can't be less than 1");
+                        break;
+                    }
                     Cart c = new Cart(AppSession.currentUserId, p.getId(), amount);
                     c.AddToDataBase();
                     cartList.add(c);
@@ -342,7 +339,7 @@ public class Main {
 
                 while(true){
                     getUsersProducts();
-                    System.out.printf("%-10s %-10s" , " 1. Edit Product " , " 2. Go Back \n");
+                    System.out.printf("\n%-10s %-10s" , " 1. Edit Product " , " 2. Go Back \n");
                     int i = readIntInput("Select an option: ");
                     switch (i){
                         case 1:
@@ -355,7 +352,7 @@ public class Main {
                                     System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
                                     , p.getSellCount(),p.getDescription());
                                     System.out.printf("%-10s %-10s %-10s %-10s" , " 1. Change Name " , " 2. Change Price " 
-                                    , " 3. Change Stock ", " 4. Change Description " , " 5. Exit");
+                                    , " 3. Change Stock ", " 4. Change Description " , " 5. Exit\n");
                                     int option = readIntInput("Select an option: ");
                                     switch (option){
                                         case 1:
@@ -481,7 +478,7 @@ public class Main {
                         for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
                             Product prod = products.getProductById(c.getProductId());
                             if(prod.getId() == i){
-                                System.out.printf("%-10s %-10s %-10s" ,"1. Buy" , "2.Remove" , "3.Exit");
+                                System.out.printf("%-10s %-10s %-10s" ,"1. Buy" , "2.Remove" , "3.Exit\n");
                                 int inp = readIntInput("Select and option: ");
                                 switch (inp){
                                     case 1:
@@ -589,7 +586,7 @@ public class Main {
         while(true){
             System.out.println("=== FAVORITES ===");
             getFavorites();
-            System.out.printf("%-10s %-10s %-10s " , "1. Select Item" , "2. Remove All" , "3. Add All to Cart" , " \n");
+            System.out.printf("%-10s %-10s %-10s " , "1. Select Item" , "2. Remove All" , "3. Add All to Cart\n");
             int input = readIntInput("Select an option: ");
             switch(input){
                 case 1:
@@ -601,7 +598,7 @@ public class Main {
                             System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
                             prod.getName(), prod.getPrice());
                             while(true){
-                                System.out.printf("" , " 1. Add to Cart " , " 2. Remove from Favorites ");
+                                System.out.printf("%-10s , %-10s" , " 1. Add to Cart " , " 2. Remove from Favorites \n");
                                 int option = readIntInput("Select an option: ");
                                 switch (option){
                                     case 1:
@@ -711,7 +708,7 @@ public class Main {
         while(!isCorrect){
             double price = readDoubleInput("Price: ");
             if(price <= 0){
-                System.out.println("Price cant be lower that 0");
+                System.out.println("Price cant be less than or equal to 0");
                 continue;
         }
         isCorrect = true;
@@ -727,7 +724,7 @@ public class Main {
         while(!isCorrect){
             int stock = readIntInput("Stock: ");
             if(stock <= 0){
-                System.out.println("stock cant be lower that 0");
+                System.out.println("stock cant be less than 0");
                 continue;
         }
         isCorrect = true;
@@ -779,7 +776,7 @@ public class Main {
 
     //Product List
     public void getAllProducts(){
-        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description");
+        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
             System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
         }
@@ -787,7 +784,7 @@ public class Main {
 
     //User's Product List
     public void getUsersProducts(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description");
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description\n");
         for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
             System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
             , p.getSellCount(),p.getDescription());
@@ -797,7 +794,7 @@ public class Main {
     //User's Cart List
     public void getUserCart(){
         double totalPrice = 0;
-        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount");
+        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount\n");
         for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
             Product prod = products.getProductById(c.getProductId());
             System.out.printf("%-10d %-20s %-10.2f %-10d\n", c.getProductId(),
@@ -809,7 +806,7 @@ public class Main {
 
     //Purchase History
     public void getPurchaseHistory(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-15\n", "Id" , "Name", "Price" , "Amount" , "Seller" , "Date");
+        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-15\n", "Id" , "Name", "Price" , "Amount" , "Seller" , "Date\n");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
             System.out.printf("%-10d %-20s %-10.2f %-10d %-10s %-15s\n", p.getProductId(),
@@ -848,7 +845,6 @@ public class Main {
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println("Purchase successful! ");
         }
-        
     }
 
     //Buy Cart

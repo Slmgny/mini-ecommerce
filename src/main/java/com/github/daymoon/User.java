@@ -87,7 +87,7 @@ public abstract class User {
         if(money < pay){
         System.out.println("Payment Error");
         }else{
-        this.money =- pay;
+        this.money -= pay;
         }
         updateUser(name, password, money);
         

@@ -47,7 +47,7 @@ public class Cart {
     public void AddToDataBase(){
 
         try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "INSERT INTO Cart (buyerId , productId , amount) VALUES (? , ? , ?)";
+            String sql = "INSERT INTO Cart (userId , productId , amount) VALUES (? , ? , ?)";
             PreparedStatement pst = conn.prepareStatement(sql);
 
             pst.setInt(1, this.buyerId);
