@@ -88,7 +88,6 @@ public abstract class User {
         System.out.println("Payment Error");
         }else{
         this.money =- pay;
-        System.out.println("New balance: " + this.money);
         }
         updateUser(name, password, money);
         

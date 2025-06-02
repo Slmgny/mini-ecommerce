@@ -837,6 +837,8 @@ public class Main {
         double price = p.getPrice() * amount;
         if(AppSession.currentUser.getMoney() < price){
             System.out.println("Failed to Purchase. Insufficient balance");
+        }else if(p.getStock() < amount){
+            System.out.println("Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available");
         }else{
             Purchase pur = new Purchase(amount, AppSession.currentUserId, p.getSellerId(), p.getId());
             pur.AddToDataBase();
@@ -846,33 +848,43 @@ public class Main {
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println("Purchase successful! ");
         }
-        //Add stock chek
+        
     }
 
     //Buy Cart
     public void buyCart(){
         double totalPrice = 0;
+        boolean canBuy = true;
         for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
-            totalPrice += products.getProductById(c.getProductId()).getPrice() * c.getAmount();
+            Product p = products.getProductById(c.getProductId());
+            totalPrice += p.getPrice() * c.getAmount();
+            if(p.getStock() < c.getAmount()){
+                System.out.println("Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available");
+                canBuy = false;
+            }
         }
         if(totalPrice > AppSession.currentUser.getMoney()){
             System.out.println("Failed to Purchase. Insufficient balance");
+            canBuy = false;
         }
-        for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
-            Product p = products.getProductById(c.getProductId());
-            User seller = users.getUserById(p.getSellerId());
-            double price = p.getPrice() * c.getAmount();
-            Purchase pur = new Purchase(c.getAmount(), AppSession.currentUserId , p.getSellerId() , p.getId() );
-            pur.AddToDataBase();
-            purchaseList.add(pur);
-            AppSession.currentUser.Pay(price);
-            seller.depositMoney(price);
-            c.DeleteFromDataBase();
-            cartList.remove(c);
-
-        }
-        System.out.println("Successful! Items in your cart have been purchased.");
-        System.out.println("Total Price: " + totalPrice);
+        if(canBuy){
+            for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
+                Product p = products.getProductById(c.getProductId());
+                User seller = users.getUserById(p.getSellerId());
+                double price = p.getPrice() * c.getAmount();
+                Purchase pur = new Purchase(c.getAmount(), AppSession.currentUserId , p.getSellerId() , p.getId() );
+                pur.AddToDataBase();
+                purchaseList.add(pur);
+                AppSession.currentUser.Pay(price);
+                seller.depositMoney(price);
+                c.DeleteFromDataBase();
+                cartList.remove(c);
+            }
+            System.out.println("Successful! Items in your cart have been purchased.");
+            System.out.println("Total Price: " + totalPrice);
+            System.out.println("New Balance: " + AppSession.currentUser.getMoney());
+            }
+        
         
     }
 }
