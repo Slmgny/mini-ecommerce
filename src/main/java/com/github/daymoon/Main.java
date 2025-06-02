@@ -480,7 +480,21 @@ public class Main {
                         for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
                             Product prod = products.getProductById(c.getProductId());
                             if(prod.getId() == i){
-                                
+                                System.out.printf("%-10s %-10s %-10s" ,"1. Buy" , "2.Remove" , "3.Exit");
+                                int inp = readIntInput("Select and option: ");
+                                switch (inp){
+                                    case 1:
+                                    buyProduct(prod, c.getAmount());
+                                    break;
+                                    case 2:
+                                    c.DeleteFromDataBase();
+                                    cartList.remove(c);
+                                    System.out.println("Product Successfuly Removed From Cart");
+                                    break;
+                                    case 3:
+                                    cartPage();
+                                    return;
+                                }
                             }
                         } 
                     }
