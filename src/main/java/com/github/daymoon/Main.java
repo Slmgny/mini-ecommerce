@@ -285,7 +285,6 @@ public class Main {
                             c.AddToDataBase();
                             cartList.add(c);
                             System.out.println("Successfully Added to Your Cart");
-                            marketPage();
                             break;
                         }
                         break;
@@ -294,7 +293,6 @@ public class Main {
                         f.AddToDataBase();
                         favoritesList.add(f);
                         System.out.println("Successfully Added to Your Favorites");
-                        marketPage();
                         break;
                         default:
                         System.out.println("Please select valid option");
@@ -615,7 +613,8 @@ public class Main {
         while(true){
             System.out.println("=== FAVORITES ===");
             getFavorites();
-            System.out.printf("%-10s %-10s %-10s \n" , "1. Select Item" , "2. Remove All" , "3. Add All to Cart");
+            System.out.println("");
+            System.out.printf("%-20s %-20s %-20s \n" , "1. Select Item" , "2. Remove All" , "3. Add All to Cart");
             int input = readIntInput("Select an option: ");
             switch(input){
                 case 1:
@@ -624,7 +623,7 @@ public class Main {
                     for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
                         if(i == f.getProductId()){
                             Product prod = products.getProductById(f.getProductId());
-                            System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
+                            System.out.printf("%-10d %-20s %-10.2f\n", f.getProductId(),
                             prod.getName(), prod.getPrice());
                             while(true){
                                 System.out.printf("%-20s , %-20s\n" , " 1. Add to Cart " , " 2. Remove from Favorites ");
@@ -857,6 +856,9 @@ public class Main {
 
 
 
+
+
+    //BUY
 
     //Buy Product
     public void buyProduct(Product p , int amount){

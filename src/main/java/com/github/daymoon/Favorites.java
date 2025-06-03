@@ -8,9 +8,10 @@ public class Favorites {
     private int userId;
 
 
-    public Favorites(int productId, int userId) {
-        this.productId = productId;
+    public Favorites(int userId , int productId) {
         this.userId = userId;
+        this.productId = productId;
+        
     }
 
 
@@ -32,10 +33,11 @@ public class Favorites {
     public void AddToDataBase(){
 
         try(Connection conn = DBConnection.connect()){
-            String sql = "INSERT INTO Favorites(productId , userId ) VALUES( ? , ? )";
+            String sql = "INSERT INTO Favorites( userId , productId  ) VALUES( ? , ? )";
             PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1, this.productId);
-            pst.setInt(2, this.userId);
+            pst.setInt(1, this.userId);
+            pst.setInt(2, this.productId);
+            
 
             pst.executeUpdate();
         }catch(Exception e){

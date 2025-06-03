@@ -36,7 +36,7 @@ public class FavoritesDAO {
     }
 
     public ArrayList<Favorites> getFavoritesByUserId(int userID){
-        ArrayList<Favorites> favoritesList = new ArrayList<>();
+        ArrayList<Favorites> favorites= new ArrayList<>();
 
         String sql = "SELECT userId , productId FROM Favorites WHERE userId = ?";
 
@@ -51,13 +51,13 @@ public class FavoritesDAO {
                 int productId = rs.getInt("productId");
 
                 Favorites c = new Favorites(userId, productId );
-                favoritesList.add(c);
+                favorites.add(c);
             }
 
         }catch(Exception e){
             e.printStackTrace();
         }
-        return favoritesList;
+        return favorites;
     }
 
 }
