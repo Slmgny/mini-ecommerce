@@ -84,7 +84,7 @@ public class Cart {
     }
 
     public boolean updateCartProduct(int amount) {
-        String sql = "UPDATE Product SET amount = ? WHERE productId = ?;";
+        String sql = "UPDATE Cart SET amount = ? WHERE productId = ?;";
 
         try (Connection conn = DBConnection.connect();
             PreparedStatement pst = conn.prepareStatement(sql)) {
