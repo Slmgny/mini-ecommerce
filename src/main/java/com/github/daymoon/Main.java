@@ -2,7 +2,6 @@ package com.github.daymoon;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.zip.DeflaterOutputStream;
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.FavoritesDAO;
@@ -492,12 +491,21 @@ public class Main {
                             switch (inp){
                                 case 1:
                                 buyProduct(prod, c.getAmount());
+                                cartPage();
                                 break;
                                 case 2:
-                                c.DeleteFromDataBase();
-                                cartList.remove(c);
-                                System.out.println("Product Successfuly Removed From Cart");
-                                break;
+                                int amount = readIntInput("Enter amount to delete: ");
+                                if(c.getAmount() <= amount){
+                                    c.DeleteFromDataBase();
+                                    cartList.remove(c);
+                                    System.out.println("Product Successfuly Removed From Cart");
+                                    cartPage();
+                                    break;
+                                }else{
+                                    c.updateCartProduct(c.getAmount() - amount);
+                                    System.out.println(amount + " " + prod.getName() + "left in Cart");
+                                    break;
+                                }
                                 case 3:
                                 cartPage();
                                 return;
@@ -842,7 +850,7 @@ public class Main {
         System.out.printf("%-10s %-20s %-10s \n", "Id" , "Name", "Price");
         for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
             Product prod = products.getProductById(f.getProductId());
-            System.out.printf("%-10d %-20s %-10.2f %-10d\n", f.getProductId(),
+            System.out.printf("%-10d %-20s %-10.2f\n", f.getProductId(),
             prod.getName(), prod.getPrice());
         }
     }

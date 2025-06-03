@@ -95,7 +95,7 @@ public class Purchase {
 
     public void AddToDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "INSERT INTO Purchase (date , amount , sellerId , buyerId , productId) VALUES (? , ? , ? , ? , ?)";
             PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
 
@@ -121,7 +121,7 @@ public class Purchase {
 
     public void DeleteFromDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "DELETE FROM Purchase WHERE productId = ? AND buyerId = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.productId);

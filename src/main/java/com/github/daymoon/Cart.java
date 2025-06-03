@@ -46,7 +46,7 @@ public class Cart {
     
     public void AddToDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "INSERT INTO Cart (userId , productId , amount) VALUES (? , ? , ?)";
             PreparedStatement pst = conn.prepareStatement(sql);
 
@@ -64,7 +64,7 @@ public class Cart {
 
     public void DeleteFromDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "DELETE FROM Cart WHERE productId = ? AND userId = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.productId);

@@ -31,11 +31,11 @@ public class Favorites {
 
     public void AddToDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "INSERT INTO Favorites(productId , userId ) VALUES( ? , ? )";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.productId);
-            pst.setDouble(2, this.userId);
+            pst.setInt(2, this.userId);
 
             pst.executeUpdate();
         }catch(Exception e){
@@ -46,13 +46,12 @@ public class Favorites {
 
     public void DeleteFromDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
-            String sql = "DELETE FROM Favorites WHERE productId = ? AND userId";
+        try(Connection conn = DBConnection.connect()){
+            String sql = "DELETE FROM Favorites WHERE productId = ? AND userId = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.productId);
             pst.setInt(2, this.userId);
             int deleted = pst.executeUpdate();
-
             if(deleted>0){
             }else{
                 System.out.println("Failed to Find the Favorite Product");

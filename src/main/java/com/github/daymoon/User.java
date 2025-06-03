@@ -96,7 +96,7 @@ public abstract class User {
 
     public void AddToDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "INSERT INTO User(name , password , userType , money) VALUES( ? , ? , ? , ?)";
             PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, this.name);
@@ -119,7 +119,7 @@ public abstract class User {
 
     public void DeleteFromDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "DELETE FROM User WHERE id  = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.id);

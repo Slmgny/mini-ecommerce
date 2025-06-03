@@ -97,7 +97,7 @@ public class Product {
 
     //Data Base
     public void AddToDataBase(){
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "INSERT INTO Product(name, price, stock, sellCount, sellerId , description) VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, this.name);
@@ -120,7 +120,7 @@ public class Product {
 
     public void DeleteFromDataBase(){
 
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db")){
+        try(Connection conn = DBConnection.connect()){
             String sql = "DELETE FROM Products WHERE id = ?";
             PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1, this.id);
