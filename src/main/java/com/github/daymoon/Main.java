@@ -62,45 +62,16 @@ public class Main {
             AppSession.currentUserId = -1;
             LoginOrSignUpPage();
             break;
-            case "back":
-            switch (AppSession.previousPage){
-                case 1:
-                AppSession.previousPage = AppSession.currentPage;
-                LoginOrSignUpPage();
-                break;
-                case 2:
-                AppSession.previousPage = AppSession.currentPage;
-                mainPage();
-                break;
-                case 3:
-                AppSession.previousPage = AppSession.currentPage;
-                marketPage();
-                break;
-                case 4:
-                AppSession.previousPage = AppSession.currentPage;
-                profilePage();
-                break;
-                case 5:
-                AppSession.previousPage = AppSession.currentPage;
-                walletPage();
-                break;
-                case 6:
-                AppSession.previousPage = AppSession.currentPage;
-                cartPage();
-                break;
-                case 7:
-                AppSession.previousPage = AppSession.currentPage;
-                purchasesPage();
-                break;
-                case 8:
-                AppSession.previousPage = AppSession.currentPage;
-                AddProductPage();
-                break;
-                default:
+        case "back":
+            if (!navigateToPage(AppSession.previousPage)) {
                 System.out.println(RED + "There is no previous page." + RESET);
-                break;
             }
-            break;
+            return "";
+        case "cancel":
+            if (!navigateToPage(AppSession.currentPage)) {
+                System.out.println(RED + "There is no current page." + RESET);
+            }
+            return "";
         case "menu":
             if(AppSession.currentUser == null){
                 System.out.println(RED + "You haven't logged in yet" + RESET);
@@ -200,6 +171,33 @@ public class Main {
 
             }
         }
+    }
+
+    private boolean navigateToPage(int pageNumber) {
+        AppSession.previousPage = AppSession.currentPage;
+        AppSession.currentPage = pageNumber;
+
+        switch (pageNumber) {
+            case 1: LoginOrSignUpPage(); break;
+            case 2: mainPage(); break;
+            case 3: marketPage(); break;
+            case 4: profilePage(); break;
+            case 5: walletPage(); break;
+            case 6: cartPage(); break;
+            case 7: purchasesPage(); break;
+            case 8: AddProductPage(); break;
+            case 9: favoritesPage(); break;
+            default: return false;
+        }
+            return true;
+    }
+    private String goToIfLoggedIn(int pageNumber) {
+        if (AppSession.currentUser == null) {
+            System.out.println(RED + "You haven't logged in yet" + RESET);
+            return readInput(">> ");
+        }
+        navigateToPage(pageNumber);
+        return "";
     }
 
 
@@ -640,6 +638,10 @@ public class Main {
     public void favoritesPage(){
         int pagenumber = 9;
         AppSession.currentPage = pagenumber;
+        int favotiresCount = favorites.getFavoritesByUserId(AppSession.currentUserId).size();
+        if(favotiresCount == 0){
+
+        }
         while(true){
             System.out.println(CYAN + "=== FAVORITES ===" + RESET);
             getFavorites();
@@ -1046,4 +1048,5 @@ public class Main {
             System.out.println(GREEN +"New Balance: " + AppSession.currentUser.getMoney() + RESET);
             }
     }
+
 }
