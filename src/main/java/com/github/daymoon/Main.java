@@ -43,7 +43,7 @@ public class Main {
     public static final String BLUE = "\u001B[34;1m";
 
     private String readInput(String prompt){
-        System.out.print(prompt);
+        System.out.print(BLUE + prompt + RESET);
         String input = sc.nextLine().trim();
         switch (input.toLowerCase()){
             case "help":
@@ -54,7 +54,7 @@ public class Main {
             break;
             case "logout":
             if(AppSession.currentUser == null){
-                System.out.println("You haven't logged in yet");
+                System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
             System.out.println(RED + "Logging out..." + RESET);
@@ -64,7 +64,7 @@ public class Main {
             break;
             case "menu":
             if(AppSession.currentUser == null){
-                System.out.println("You haven't logged in yet");
+                System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
             mainPage();
@@ -96,7 +96,7 @@ public class Main {
                 AddProductPage();
                 break;
                 default:
-                System.out.println("There is no previous page.");
+                System.out.println(RED + "There is no previous page." + RESET);
                 break;
             }
             break;
@@ -111,7 +111,7 @@ public class Main {
             try {
                 return Integer.parseInt(input);
             }catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number:");
+                System.out.println( RED + "Please enter a valid number:" + RESET);
             }
         }
     }
@@ -122,7 +122,8 @@ public class Main {
             try {
                 return Double.parseDouble(input);
             }catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number:");
+                    System.out.println( RED + "Please enter a valid number:" + RESET);
+
             }
         }
     }
@@ -141,7 +142,7 @@ public class Main {
     
     public void run(){
         while(true){
-            System.out.println("Welcome to Mini E-Commerce App");
+            System.out.println(BLUE + "Welcome to Mini E-Commerce App" + RESET);
             LoginOrSignUpPage();
         }
     }
@@ -152,8 +153,8 @@ public class Main {
     public void LoginOrSignUpPage(){
         int pagenumber = 1;
         AppSession.currentPage = pagenumber;
-        System.out.println("=== LOG IN OR SIGN UP ===");
-        System.out.println("You can type 'help' to see the available commands");
+        System.out.println(CYAN + "=== LOG IN OR SIGN UP ===" + RESET);
+        System.out.println(YELLOW + "You can type 'help' to see the available commands" + RESET);
         String userName = AskName();
         Boolean newUser = true;
         for(User u: userList){
@@ -165,7 +166,7 @@ public class Main {
             }
         }
         if(newUser){ // Sign up
-            System.out.println("=== SIGN UP ===");
+            System.out.println(CYAN + "=== SIGN UP ===" + RESET);
             String password = readInput("Create Your Password: ");
             while(!isPasswordValid(password)){
                 password = readInput("Create Your Password: ");
@@ -181,7 +182,7 @@ public class Main {
             System.out.println("=== LOG IN ===");
             String password = readInput("Enter Your Password: ");
             while(!isPasswordCorrect(password)){
-                System.out.println("Incorrect Password");
+                System.out.println(RED + "Incorrect Password" + RESET);
                 password = readInput("Enter Your Password: ");
             }
             AppSession.previousPage = pagenumber;
@@ -263,14 +264,15 @@ public class Main {
             int input = readIntInput("Enter Product Id: ");
             for(Product p: productList){
                 if(input == p.getId()){
-                    System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
-                    System.out.printf("\n%-20s %-20s %-20s\n"," 1. Buy " , " 2. Add to Cart " , "3. Add to Favorites" );
+                    System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
+                    p.getDescription());
+                    System.out.printf("\n" + YELLOW +"%-20s %-20s %-20s\n" + RESET," 1. Buy " , " 2. Add to Cart " , "3. Add to Favorites" );
                     int input2 = readIntInput("Select an option: ");
                     switch (input2){
                         case 1:
                         int pAmount = readIntInput("Enter Amount: ");
                         if(pAmount <= 0){
-                            System.out.println("Amount can't be less than 1");
+                            System.out.println(RED + "Amount can't be less than 1" + RESET);
                             break;
                         }
                         buyProduct(p, pAmount);
@@ -278,14 +280,14 @@ public class Main {
                         case 2:
                         int amount = readIntInput("Enter the Amount: ");
                         if(amount <= 0){
-                            System.out.println("Amount can't be less than 1");
+                            System.out.println(RED +"Amount can't be less than 1" + RESET);
                             break;
                         }
                         boolean inCart = false;
                         for(Cart cart : carts.getCartProductsByUserId(AppSession.currentUserId)){
                             if(cart.getProductId() == p.getId()){
                                 cart.updateCartProduct(cart.getAmount() + amount);
-                                System.out.println("Successfully Added to Your Cart");
+                                System.out.println(GREEN +"Successfully Added to Your Cart" + RESET);
                                 inCart = true;
                                 break;
                             }
@@ -294,7 +296,7 @@ public class Main {
                             Cart c = new Cart(AppSession.currentUserId, p.getId(), amount);
                             c.AddToDataBase();
                             cartList.add(c);
-                            System.out.println("Successfully Added to Your Cart");
+                            System.out.println(GREEN + "Successfully Added to Your Cart"+ RESET);
                             break;
                         }
                         break;
@@ -302,7 +304,7 @@ public class Main {
                         Favorites f = new Favorites(p.getId(), AppSession.currentUserId);
                         f.AddToDataBase();
                         favoritesList.add(f);
-                        System.out.println("Successfully Added to Your Favorites");
+                        System.out.println(GREEN + "Successfully Added to Your Favorites" + RESET);
                         break;
                         default:
                         System.out.println(RED + "Please select valid option" + RESET);
@@ -321,20 +323,22 @@ public class Main {
         AppSession.currentPage = pagenumber;
         User user = AppSession.currentUser;
         while(true){
-            System.out.println("=== PROFILE ===");
-            System.out.println("1. Edit Your Name");
-            System.out.println("2. Change Password");
-            System.out.println("3. View Your Products");
-            System.out.println("4. View Your Favorites");
+            System.out.println( CYAN + "=== PROFILE ===" + RESET);
+            System.out.println(YELLOW + "1." + RESET + " Edit Your Name");
+            System.out.println(YELLOW + "2." + RESET + " Change Password");
+            System.out.println(YELLOW + "3." + RESET + " View Your Products");
+            System.out.println(YELLOW + "4." + RESET + " View Your Favorites");
             int input = readIntInput("Select an option: ");
             switch (input){
                 case 1:
                 String password = readInput("Enter Your Password: ");
                 while(!isPasswordCorrect(password)){
-                    System.out.println("Wrong Password!");
+                    System.out.println(RED + "Wrong Password!" + RESET);
                     password = readInput("Enter Your Password: ");
+                    
                 }
                 String newName = AskName();
+                System.out.println(GREEN + "Name updated successfully!" + RESET);
                 user.setName(newName);
                 user.updateUser(newName, user.getPassword(), user.getMoney());
                 AppSession.previousPage = pagenumber;
@@ -343,7 +347,7 @@ public class Main {
                 case 2:
                 String password2 = readInput("Enter Your Password: ");
                 while(!isPasswordCorrect(password2)){
-                    System.out.println("Wrong Password!");
+                    System.out.println(RED + "Wrong Password!" + RESET);
                     password2 = readInput("Enter Your Password: ");
                 }
                 String newPassword = readInput("Enter Your New Password: ");
@@ -351,6 +355,7 @@ public class Main {
                     newPassword = readInput("Enter Your New Password: ");
                 }
                 user.setPassword(newPassword);
+                System.out.println(GREEN + "Password updated successfully!" + RESET);
                 user.updateUser(user.getName(), newPassword, user.getMoney());
                 AppSession.previousPage = pagenumber;
                 profilePage();
@@ -373,12 +378,12 @@ public class Main {
     public void walletPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
-        System.out.println("=== Wallet ===");
-        System.out.println("Balance: " + AppSession.currentUser.getMoney());
-        System.out.println("1. Deposit Money");
-        System.out.println("2. Main Menu");
-        int input = readIntInput("Select an option: ");
+        System.out.println(CYAN + "=== Wallet ===" + RESET);
+        System.out.println(GREEN + "Balance: " + AppSession.currentUser.getMoney() + RESET);
+        System.out.println(YELLOW + "1." + RESET +"Deposit Money");
+        System.out.println(YELLOW + "2."+ RESET +"Main Menu");
         while(true){
+            int input = readIntInput("Select an option: ");
             switch (input){
                 case 1:
                 double deposit = readIntInput("Deposit amount: ");
@@ -401,14 +406,11 @@ public class Main {
     public void cartPage(){
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
-        int totalItemsInCart = 0;
-        for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
-            totalItemsInCart++;
-        }
+        int totalItemsInCart = carts.getCartProductsByUserId(AppSession.currentUserId).size();
         while(true){
-            System.out.println("=== CART ===");
+            System.out.println(CYAN + "=== CART ===" + RESET);
             if(totalItemsInCart == 0){
-                System.out.println("Cart is Empty");
+                System.out.println(GREEN + "Cart is Empty" + RESET);
                 AppSession.previousPage = pagenumber;
                 mainPage();
             }else{
@@ -467,6 +469,7 @@ public class Main {
                             }
                         }
                     }
+                    break;
                     case 4:
                     AppSession.previousPage = pagenumber;
                     mainPage();
@@ -547,7 +550,7 @@ public class Main {
 
         System.out.println("=== ADD PRODUCT ===");
         System.out.println("You have to enter your Products Name , Price , Stock and (Optional) Description");
-        System.out.println("You can type 'help' to see the available commands");
+        System.out.println(YELLOW + "You can type 'help' to see the available commands" + RESET);
         while(true){
             pName = AskName();
             pPrice = AskPrice();
@@ -635,9 +638,11 @@ public class Main {
         }
     }
 
+    //User Products Page
     public void userProductsPage(){
         int pagenumber = 10;
         AppSession.currentPage = pagenumber;
+        System.out.println(CYAN + "===YOUR PRODUCTS===" + RESET);
         while(true){
             getUsersProducts();
             System.out.printf("\n%-20s %-20s\n" , " 1. Edit Product " , " 2. Go Back ");
@@ -760,11 +765,11 @@ public class Main {
         while(!isCorrect){
             String name = readInput("Enter Product Name: ");
             if(name.length() < 4){
-                System.out.println("Product Name must be at least 4 characters");
+                System.out.println(RED + "Product Name must be at least 4 characters" + RESET);
                 continue;
         }
             if(!name.matches(".*[a-zA-Z].*")){
-                System.out.println("Product Name Must contain at least 1 letter");
+                System.out.println(RED +"Product Name Must contain at least 1 letter" + RESET);
                 continue;
         }
         isCorrect = true;
@@ -781,7 +786,7 @@ public class Main {
         while(!isCorrect){
             double price = readDoubleInput("Price: ");
             if(price <= 0){
-                System.out.println("Price cant be less than or equal to 0");
+                System.out.println(RED + "Price can't be less than or equal to 0" + RESET);
                 continue;
         }
         isCorrect = true;
@@ -797,7 +802,7 @@ public class Main {
         while(!isCorrect){
             int stock = readIntInput("Stock: ");
             if(stock <= 0){
-                System.out.println("stock cant be less than 0");
+                System.out.println(RED + "Stock can't be less than 0" + RESET);
                 continue;
         }
         isCorrect = true;
@@ -808,23 +813,23 @@ public class Main {
 
     public static Boolean isPasswordValid(String password){
         if(password.length() < 8){
-            System.out.println("Password must be at least 8 characters");
+            System.out.println(RED + "Password must be at least 8 characters" + RESET);
             return false;
         }
         
 
         if(!password.matches(".*[A-Z].*")){
-            System.out.println("Password must contain at least 1 capital letter");
+            System.out.println(RED + "Password must contain at least 1 capital letter" + RESET);
             return false;
         }
 
         if(!password.matches(".*[a-z].*")){
-            System.out.println("Password must contain at least 1 lowercase letter");
+            System.out.println(RED + "Password must contain at least 1 lowercase letter" + RESET);
             return false;
         }
 
         if(!password.matches(".*\\d.*")){
-            System.out.println("Password must contain at least 1 number");
+            System.out.println(RED + "Password must contain at least 1 number" + RESET);
             return false;
         }
 
@@ -838,7 +843,7 @@ public class Main {
 
     public static Boolean canBuy(double totalPrice){
         if(AppSession.currentUser.getMoney() < totalPrice){
-            System.out.println("Failed to Purchase. Insufficient balance");
+            System.out.println(RED + "Failed to Purchase. Insufficient balance" + RESET);
             return false;
         }
         return true;
@@ -851,7 +856,8 @@ public class Main {
     public void getAllProducts(){
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
-            System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() , p.getDescription());
+            System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
+             p.getDescription());
         }
     }
 
@@ -911,14 +917,13 @@ public class Main {
 
 
     //BUY
-
     //Buy Product
     public void buyProduct(Product p , int amount){
         double price = p.getPrice() * amount;
         if(AppSession.currentUser.getMoney() < price){
-            System.out.println("Failed to Purchase. Insufficient balance");
+            System.out.println(RED + "Failed to Purchase. Insufficient balance" + RESET);
         }else if(p.getStock() < amount){
-            System.out.println("Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available");
+            System.out.println(YELLOW + "Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available" + RESET);
         }else{
             Purchase pur = new Purchase(amount, AppSession.currentUserId, p.getSellerId(), p.getId());
             pur.AddToDataBase();
@@ -926,7 +931,7 @@ public class Main {
             p.SellProduct();
             AppSession.currentUser.Pay(price);
             users.getUserById(p.getSellerId()).depositMoney(price);
-            System.out.println("Purchase successful! ");
+            System.out.println(GREEN + "Purchase successful!" + RESET);
         }
     }
 
@@ -938,12 +943,12 @@ public class Main {
             Product p = products.getProductById(c.getProductId());
             totalPrice += p.getPrice() * c.getAmount();
             if(p.getStock() < c.getAmount()){
-                System.out.println("Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available");
+                System.out.println(YELLOW + "Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available" + RESET);
                 canBuy = false;
             }
         }
         if(totalPrice > AppSession.currentUser.getMoney()){
-            System.out.println("Failed to Purchase. Insufficient balance");
+            System.out.println(RED + "Failed to Purchase. Insufficient balance" + RESET);
             canBuy = false;
         }
         if(canBuy){
@@ -959,9 +964,9 @@ public class Main {
                 c.DeleteFromDataBase();
                 cartList.remove(c);
             }
-            System.out.println("Successful! Items in your cart have been purchased.");
-            System.out.println("Total Price: " + totalPrice);
-            System.out.println("New Balance: " + AppSession.currentUser.getMoney());
+            System.out.println(GREEN +"Successful! Items in your cart have been purchased." + RESET);
+            System.out.println(RED +"Total Price: " + totalPrice + RESET);
+            System.out.println(GREEN +"New Balance: " + AppSession.currentUser.getMoney() + RESET);
             }
     }
 }
