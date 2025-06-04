@@ -65,7 +65,7 @@ public class ProductDAO {
                 String description = rs.getString("description");
 
 
-                Product product = new Product(id, name, price, stock, sellCount , sellerId , description);
+                Product product = new Product(id, name, price, sellCount ,  stock , sellerId , description);
                 products.add(product);
             }
 
@@ -96,7 +96,7 @@ public class ProductDAO {
                 int sellerId = rs.getInt("sellerId");
                 String description = rs.getString("description");
 
-                product = new Product(id, name, price, stock, sellCount , sellerId , description);
+                product = new Product(id, name, price, sellCount , stock , sellerId , description);
             }
 
         } catch (SQLException e) {

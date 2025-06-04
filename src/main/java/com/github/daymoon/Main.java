@@ -33,7 +33,14 @@ public class Main {
 
         
     }
-
+    public static final String RESET = "\u001B[0m";
+    public static final String CYAN = "\u001B[36;1m";
+    public static final String YELLOW = "\u001B[33;1m";
+    public static final String GREEN = "\u001B[32;1m";
+    public static final String RED = "\u001B[31;1m";
+    public static final String MAGENTA = "\u001B[35;1m";
+    public static final String WHITE = "\u001B[37m";
+    public static final String BLUE = "\u001B[34;1m";
 
     private String readInput(String prompt){
         System.out.print(prompt);
@@ -50,7 +57,7 @@ public class Main {
                 System.out.println("You haven't logged in yet");
                 break;
             }
-            System.out.println("Logging out...");
+            System.out.println(RED + "Logging out..." + RESET);
             AppSession.currentUser=null;
             AppSession.currentUserId = -1;
             LoginOrSignUpPage();
@@ -183,22 +190,24 @@ public class Main {
         }
     }
 
+
     //Main Page
     public void mainPage(){
         int pagenumber = 2;
         AppSession.currentPage = pagenumber;
-        System.out.println("=== MAIN MENU ===");
-        System.out.println("1. Market");
-        System.out.println("2. Profile");
-        System.out.println("3. Wallet");
-        System.out.println("4. Cart");
-        System.out.println("5. Purchases");
-        System.out.println("6. Add Your Product");
-        System.out.println("7. Logout");
-        System.out.println("8. Exit");
-        System.out.println("You can type 'help' to see the available commands");
+        System.out.println(CYAN + "=== MAIN MENU ===" + RESET);
+        System.out.println(YELLOW + "1." + RESET + " Market");
+        System.out.println(YELLOW + "2." + RESET + " Profile");
+        System.out.println(YELLOW + "3." + RESET + " Wallet");
+        System.out.println(YELLOW + "4." + RESET + " Cart");
+        System.out.println(YELLOW + "5." + RESET + " Purchases");
+        System.out.println(YELLOW + "6." + RESET + " Add Your Product");
+        System.out.println(RED + "7." + RESET + " Logout");
+        System.out.println(RED + "8." + RESET + " Exit");
+        System.out.println(WHITE + "You can type '" + MAGENTA + "help" + WHITE + "' to see the available commands" + RESET);
+
         while(true){
-        String input = readInput("Select an option: ");
+        String input = readInput(CYAN + "Select an option: " + RESET);
             switch (input){
                 case "1":
                 AppSession.previousPage = pagenumber;
@@ -226,7 +235,7 @@ public class Main {
                 break;
                 case "7":
                 AppSession.previousPage = 1;
-                System.out.println("Logging out...");
+                System.out.println(RED + "Logging out..." + RESET);
                 AppSession.currentUser=null;
                 AppSession.currentUserId = -1;
                 LoginOrSignUpPage();
@@ -235,7 +244,7 @@ public class Main {
                 System.exit(0);
                 break;
                 default:
-                System.out.println("Please select valid option");
+                System.out.println(RED + "Please select valid option" + RESET);
                 break;
 
             }
@@ -243,12 +252,13 @@ public class Main {
 
     }
 
+
     //Market Page
     public void marketPage(){
         int pagenumber = 3;
         AppSession.currentPage = pagenumber;
         while(true){
-            System.out.println("=== MARKET ===");
+            System.out.println(CYAN + "=== MARKET ===" + RESET);
             getAllProducts();
             int input = readIntInput("Enter Product Id: ");
             for(Product p: productList){
@@ -295,7 +305,7 @@ public class Main {
                         System.out.println("Successfully Added to Your Favorites");
                         break;
                         default:
-                        System.out.println("Please select valid option");
+                        System.out.println(RED + "Please select valid option" + RESET);
                         break;
                     }
                 }
@@ -303,6 +313,7 @@ public class Main {
         }
         
     }
+
 
     //Profile Page
     public void profilePage(){
@@ -326,6 +337,7 @@ public class Main {
                 String newName = AskName();
                 user.setName(newName);
                 user.updateUser(newName, user.getPassword(), user.getMoney());
+                AppSession.previousPage = pagenumber;
                 profilePage();
                 break;
                 case 2:
@@ -340,81 +352,18 @@ public class Main {
                 }
                 user.setPassword(newPassword);
                 user.updateUser(user.getName(), newPassword, user.getMoney());
+                AppSession.previousPage = pagenumber;
                 profilePage();
                 break;
                 case 3:
-
-                while(true){
-                    getUsersProducts();
-                    System.out.printf("\n%-20s %-20s\n" , " 1. Edit Product " , " 2. Go Back ");
-                    int i = readIntInput("Select an option: ");
-                    switch (i){
-                        case 1:
-                        int inp = readIntInput("Enter Product ID: ");
-                        boolean found = false;
-                        for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
-                            if(inp == p.getId()){
-                                found = true;
-                                while(true){
-                                    System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
-                                    , p.getSellCount(),p.getDescription());
-                                    System.out.printf("%-30s %-30s %-30s %-30s\n" , " 1. Change Name " , " 2. Change Price " 
-                                    , " 3. Change Stock ", " 4. Change Description " , " 5. Exit");
-                                    int option = readIntInput("Select an option: ");
-                                    switch (option){
-                                        case 1:
-                                        String newProductName = AskProductName();
-                                        p.setName(newProductName);
-                                        p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
-                                        profilePage();
-                                        break;
-                                        case 2:
-                                        double newPrice = AskPrice();
-                                        p.setPrice(newPrice);
-                                        p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
-                                        profilePage();
-                                        break;
-                                        case 3:
-                                        int stock = AskStock();
-                                        p.setStock(stock);
-                                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , stock , p.getDescription());
-                                        profilePage();
-                                        break;
-                                        case 4:
-                                        String desc = readInput("Enter new Description");
-                                        p.setDescription(desc);
-                                        p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , p.getStock() , desc);
-                                        profilePage();
-                                        break;
-                                        case 5:
-                                        profilePage();
-                                        break;
-                                        default:
-                                        System.out.println("Please select valid option");
-                                        break;
-                                    }
-                                }  
-                            }
-                        }
-                        if(!found){
-                            System.out.println("Product not found");
-                            break;
-                        }
-                        break;
-                        case 2:
-                        profilePage();
-                        break;
-                        default:
-                        System.out.println("Please select valid option");
-                        break;
-                    }
-                    break;
-                }
+                userProductsPage();
+                break;
                 case 4:
+                AppSession.previousPage = pagenumber;
                 favoritesPage();
                 break;
                 default:
-                System.out.println("Please select valid option");
+                System.out.println(RED + "Please select valid option" + RESET);
                 break;
             }
         }
@@ -438,10 +387,11 @@ public class Main {
                 walletPage();
                 break;
                 case 2:
+                AppSession.previousPage = pagenumber;
                 mainPage();
                 break;
                 default:
-                System.out.println("Please select valid option");
+                System.out.println(RED + "Please select valid option" + RESET);
                 break;
             }
         }
@@ -459,6 +409,7 @@ public class Main {
             System.out.println("=== CART ===");
             if(totalItemsInCart == 0){
                 System.out.println("Cart is Empty");
+                AppSession.previousPage = pagenumber;
                 mainPage();
             }else{
                 getUserCart();
@@ -489,6 +440,7 @@ public class Main {
                             switch (inp){
                                 case 1:
                                 buyProduct(prod, c.getAmount());
+                                AppSession.previousPage = pagenumber;
                                 cartPage();
                                 break;
                                 case 2:
@@ -497,6 +449,7 @@ public class Main {
                                     c.DeleteFromDataBase();
                                     cartList.remove(c);
                                     System.out.println("Product Successfuly Removed From Cart");
+                                    AppSession.previousPage = pagenumber;
                                     cartPage();
                                     break;
                                 }else{
@@ -505,19 +458,21 @@ public class Main {
                                     break;
                                 }
                                 case 3:
+                                AppSession.previousPage = pagenumber;
                                 cartPage();
                                 return;
                                 default:
-                                System.out.println("Please select valid option");
+                                System.out.println(RED + "Please select valid option" + RESET);
                                 break;
                             }
                         }
                     }
                     case 4:
+                    AppSession.previousPage = pagenumber;
                     mainPage();
                     return;
                     default:
-                    System.out.println("Please select valid option");
+                    System.out.println(RED + "Please select valid option" + RESET);
                     break;
                 }
             }
@@ -557,7 +512,7 @@ public class Main {
                                     case 2:
                                     break;
                                     default:
-                                    System.out.println("Please select valid option");
+                                    System.out.println(RED + "Please select valid option" + RESET);
                                     break;
                                 }
                             }
@@ -565,14 +520,16 @@ public class Main {
                         break;
                     }
                     case 2:
+                    AppSession.previousPage = pagenumber;
                     mainPage();
                     return;
                     default:
-                    System.out.println("Please select valid option");
+                    System.out.println(RED + "Please select valid option" + RESET);
                     break;
             }
             }else{
                 System.out.println("Purhcase History is Empty");
+                AppSession.previousPage = pagenumber;
                 mainPage();
             }
             
@@ -634,15 +591,17 @@ public class Main {
                                     Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
                                     c.AddToDataBase();
                                     cartList.add(c);
+                                    AppSession.previousPage = pagenumber;
                                     favoritesPage();
                                     break;
                                     case 2:
                                     f.DeleteFromDataBase();
                                     favoritesList.remove(f);
+                                    AppSession.previousPage = pagenumber;
                                     favoritesPage();
                                     break;
                                     default:
-                                    System.out.println("Please select valid option");
+                                    System.out.println(RED + "Please select valid option" + RESET);
                                     break;
                                 }
                             }
@@ -657,6 +616,7 @@ public class Main {
                     f.DeleteFromDataBase();
                     favoritesList.remove(f);
                 }
+                AppSession.previousPage = pagenumber;
                 favoritesPage();
                 break;
                 case 3:
@@ -665,14 +625,99 @@ public class Main {
                     c.AddToDataBase();
                     cartList.add(c);
                 }
+                AppSession.previousPage = pagenumber;
                 cartPage();
                 break;
                 default:
-                System.out.println("Please select valid option");
+                System.out.println(RED + "Please select valid option" + RESET);
                 break;
             }
         }
     }
+
+    public void userProductsPage(){
+        int pagenumber = 10;
+        AppSession.currentPage = pagenumber;
+        while(true){
+            getUsersProducts();
+            System.out.printf("\n%-20s %-20s\n" , " 1. Edit Product " , " 2. Go Back ");
+            int i = readIntInput("Select an option: ");
+            switch (i){
+                case 1:
+                int inp = readIntInput("Enter Product ID: ");
+                boolean found = false;
+                for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
+                    if(inp == p.getId()){
+                        found = true;
+                        while(true){
+                            System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
+                            , p.getSellCount(),p.getDescription());
+                            System.out.printf("%-20s %-20s %-20s %-20s %-20 %-20\n" , " 1. Change Name " , " 2. Change Price " 
+                            , " 3. Change Stock ", " 4. Change Description " , "5. Delete Product" , " 6. Exit");
+                            int option = readIntInput("Select an option: ");
+                            switch (option){
+                                case 1:
+                                String newProductName = AskProductName();
+                                p.setName(newProductName);
+                                p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
+                                AppSession.previousPage = pagenumber;
+                                profilePage();
+                                break;
+                                case 2:
+                                double newPrice = AskPrice();
+                                p.setPrice(newPrice);
+                                p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
+                                AppSession.previousPage = pagenumber;
+                                profilePage();
+                                break;
+                                case 3:
+                                int stock = AskStock();
+                                p.setStock(stock);
+                                p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , stock , p.getDescription());
+                                AppSession.previousPage = pagenumber;
+                                profilePage();
+                                break;
+                                case 4:
+                                String desc = readInput("Enter new Description");
+                                p.setDescription(desc);
+                                p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , p.getStock() , desc);
+                                AppSession.previousPage = pagenumber;
+                                profilePage();
+                                break;
+                                case 5:
+                                p.DeleteFromDataBase();
+                                productList.remove(p);
+                                System.out.println("Successfuly Deleted the Product");
+                                break;
+                                case 6:
+                                AppSession.previousPage = pagenumber;
+                                profilePage();
+                                break;
+                                default:
+                                System.out.println(RED + "Please select valid option" + RESET);
+                                break;
+                            }
+                        }  
+                    }
+                }
+                if(!found){
+                    System.out.println("Product not found");
+                    break;
+                }
+                break;
+                case 2:
+                AppSession.previousPage = pagenumber;
+                profilePage();
+                break;
+                default:
+                System.out.println(RED + "Please select valid option" + RESET);
+                break;
+            }
+            break;
+        }
+    }
+
+
 
 
     // Help
@@ -800,21 +845,23 @@ public class Main {
     }
 
 
-    //LISTS
 
+    //LISTS
     //Product List
     public void getAllProducts(){
-        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Description\n");
+        System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
-            System.out.printf("%-10d %-20s %-10.2f %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getDescription());
+            System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() , p.getDescription());
         }
     }
 
     //User's Product List
     public void getUsersProducts(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-10s\n", "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description\n");
+        System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s"+ GREEN +"%-10s"+ MAGENTA +"%-10s"+ BLUE +"%-10s"+ WHITE +"%-10s\n"+ RESET,
+         "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description\n");
         for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
-            System.out.printf("%-10d %-20s %-10.2f %-10d %-10d %-10s\n", p.getId() , p.getName(), p.getPrice() , p.getStock()
+            System.out.printf(YELLOW + "%-10d"+ CYAN +"%-20s"+ GREEN +"%-10.2f"+ MAGENTA +"%-10d"+ BLUE +"%-17d"+ WHITE +"%-10s\n"+ RESET,
+            p.getId() , p.getName(), p.getPrice() , p.getStock()
             , p.getSellCount(),p.getDescription());
         }
     }
@@ -822,23 +869,29 @@ public class Main {
     //User's Cart List
     public void getUserCart(){
         double totalPrice = 0;
-        System.out.printf("%-10s %-20s %-10s %-10s\n", "Id" , "Name", "Price" , "Amount\n");
+        System.out.printf(
+        YELLOW + "%-10s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s\n" + RESET,
+        "Id", "Name", "Price", "Amount");
         for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
             Product prod = products.getProductById(c.getProductId());
-            System.out.printf("%-10d %-20s %-10.2f %-10d\n", c.getProductId(),
+            System.out.printf( YELLOW + "%-10d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d\n" + RESET, c.getProductId(),
             prod.getName(), prod.getPrice() , c.getAmount());
-            totalPrice += prod.getPrice();
+            totalPrice += prod.getPrice() * c.getAmount();
             System.out.println("Total: " + totalPrice + " $");
         }
     }
 
     //Purchase History
     public void getPurchaseHistory(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-10s %-15\n", "Id" , "Name", "Price" , "Amount" , "Seller" , "Date\n");
+        System.out.printf(
+        YELLOW + "%-10s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + 
+        BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
+        "Id", "Name", "Price", "Amount", "Seller", "Date");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
-            System.out.printf("%-10d %-20s %-10.2f %-10d %-10s %-15s\n", p.getProductId(),
-            prod.getName(), prod.getPrice() , p.getAmount() ,
+            System.out.printf(YELLOW + "%-10d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
+            BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
+            p.getProductId(),prod.getName(), prod.getPrice() , p.getAmount() ,
             users.getUserById(p.getSellerId()).getName() , p.getDateString());
             
         }
@@ -846,14 +899,13 @@ public class Main {
 
     //Favorites List
     public void getFavorites(){
-        System.out.printf("%-10s %-20s %-10s \n", "Id" , "Name", "Price");
+        System.out.printf(YELLOW + "%-10s" + MAGENTA + "%-20s" + GREEN + "%-10s\n" + RESET, "Id" , "Name", "Price");
         for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
             Product prod = products.getProductById(f.getProductId());
-            System.out.printf("%-10d %-20s %-10.2f\n", f.getProductId(),
+            System.out.printf(YELLOW + "%-10d" + MAGENTA + "%-20s" + GREEN + "%-10.2f\n" + RESET, f.getProductId(),
             prod.getName(), prod.getPrice());
         }
     }
-
 
 
 
@@ -911,7 +963,5 @@ public class Main {
             System.out.println("Total Price: " + totalPrice);
             System.out.println("New Balance: " + AppSession.currentUser.getMoney());
             }
-        
-        
     }
 }
