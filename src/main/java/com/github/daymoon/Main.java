@@ -65,27 +65,35 @@ public class Main {
             case "back":
             switch (AppSession.previousPage){
                 case 1:
+                AppSession.previousPage = AppSession.currentPage;
                 LoginOrSignUpPage();
                 break;
                 case 2:
+                AppSession.previousPage = AppSession.currentPage;
                 mainPage();
                 break;
                 case 3:
+                AppSession.previousPage = AppSession.currentPage;
                 marketPage();
                 break;
                 case 4:
+                AppSession.previousPage = AppSession.currentPage;
                 profilePage();
                 break;
                 case 5:
+                AppSession.previousPage = AppSession.currentPage;
                 walletPage();
                 break;
                 case 6:
+                AppSession.previousPage = AppSession.currentPage;
                 cartPage();
                 break;
                 case 7:
+                AppSession.previousPage = AppSession.currentPage;
                 purchasesPage();
                 break;
                 case 8:
+                AppSession.previousPage = AppSession.currentPage;
                 AddProductPage();
                 break;
                 default:
@@ -98,6 +106,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             mainPage();
             break;
 
@@ -106,6 +115,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             marketPage();
             break;
 
@@ -114,6 +124,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             profilePage();
             break;
 
@@ -122,6 +133,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             walletPage();
             break;
 
@@ -130,6 +142,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             cartPage();
             break;
 
@@ -139,6 +152,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             favoritesPage();
             break;
 
@@ -148,6 +162,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             purchasesPage();
             break;
 
@@ -156,6 +171,7 @@ public class Main {
                 System.out.println(RED + "You haven't logged in yet" + RESET);
                 break;
             }
+            AppSession.previousPage = AppSession.currentPage;
             AddProductPage();
             break;
         }
@@ -214,7 +230,7 @@ public class Main {
         System.out.println(CYAN + "=== LOG IN OR SIGN UP ===" + RESET);
         System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
         String userName = AskName();
-        Boolean newUser = true;
+        boolean newUser = true;
         for(User u: userList){
             if(u.getName().equals(userName)){
                 newUser = false;
@@ -237,7 +253,7 @@ public class Main {
             AppSession.previousPage = pagenumber;
             mainPage();
         }else{ // Login
-            System.out.println("=== LOG IN ===");
+            System.out.println(CYAN + "=== LOG IN ===" + RESET);
             String password = readInput("Enter Your Password: ");
             while(!isPasswordCorrect(password)){
                 System.out.println(RED + "Incorrect Password" + RESET);
@@ -308,22 +324,22 @@ public class Main {
 
             }
         }
-
     }
-
 
     //Market Page
     public void marketPage(){
         int pagenumber = 3;
         AppSession.currentPage = pagenumber;
+        boolean valid = false;
         while(true){
             System.out.println(CYAN + "=== MARKET ===" + RESET);
             getAllProducts();
             int input = readIntInput("Enter Product Id: ");
             for(Product p: productList){
                 if(input == p.getId()){
-                    System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
-                    p.getDescription());
+                    valid = true;
+                    System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET,
+                    p.getId() , p.getName(), p.getPrice() ,p.getDescription());
                     System.out.printf("\n" + YELLOW +"%-20s %-20s %-20s\n" + RESET," 1. Buy " , " 2. Add to Cart " , "3. Add to Favorites" );
                     int input2 = readIntInput("Select an option: ");
                     switch (input2){
@@ -371,10 +387,11 @@ public class Main {
                     }
                 }
             }
+            if(!valid){
+                System.out.println(RED + "Product not found. Try again." + RESET);
+            }
         }
-        
     }
-
 
     //Profile Page
     public void profilePage(){
@@ -382,7 +399,7 @@ public class Main {
         AppSession.currentPage = pagenumber;
         User user = AppSession.currentUser;
         while(true){
-            System.out.println( CYAN + "=== PROFILE ===" + RESET);
+            System.out.println(CYAN + "=== PROFILE ===" + RESET);
             System.out.println(YELLOW + "1." + RESET + " Edit Your Name");
             System.out.println(YELLOW + "2." + RESET + " Change Password");
             System.out.println(YELLOW + "3." + RESET + " View Your Products");
@@ -401,8 +418,7 @@ public class Main {
                 user.setName(newName);
                 user.updateUser(newName, user.getPassword(), user.getMoney());
                 AppSession.previousPage = pagenumber;
-                profilePage();
-                break;
+                continue;
                 case 2:
                 String password2 = readInput("Enter Your Password: ");
                 while(!isPasswordCorrect(password2)){
@@ -417,8 +433,7 @@ public class Main {
                 System.out.println(GREEN + "Password updated successfully!" + RESET);
                 user.updateUser(user.getName(), newPassword, user.getMoney());
                 AppSession.previousPage = pagenumber;
-                profilePage();
-                break;
+                continue;
                 case 3:
                 userProductsPage();
                 break;
@@ -438,19 +453,18 @@ public class Main {
     public void walletPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
-        System.out.println(CYAN + "=== Wallet ===" + RESET);
-        System.out.println(GREEN + "Balance: " + AppSession.currentUser.getMoney() + RESET);
-        System.out.println(YELLOW + "1." + RESET +"Deposit Money");
-        System.out.println(YELLOW + "2."+ RESET +"Main Menu");
         while(true){
+            System.out.println(CYAN + "=== Wallet ===" + RESET);
+            System.out.println(GREEN + "Balance: " + AppSession.currentUser.getMoney() + RESET);
+            System.out.println(YELLOW + "1." + RESET +"Deposit Money");
+            System.out.println(YELLOW + "2."+ RESET +"Main Menu");
             int input = readIntInput("Select an option: ");
             switch (input){
                 case 1:
                 double deposit = readIntInput("Deposit amount: ");
                 AppSession.currentUser.depositMoney(deposit);
                 AppSession.currentUser.updateUser(AppSession.currentUser.getName(), AppSession.currentUser.getPassword(), AppSession.currentUser.getMoney());
-                walletPage();
-                break;
+                continue;
                 case 2:
                 AppSession.previousPage = pagenumber;
                 mainPage();
@@ -467,8 +481,8 @@ public class Main {
     public void cartPage(){
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
-        int totalItemsInCart = carts.getCartProductsByUserId(AppSession.currentUserId).size();
         while(true){
+            int totalItemsInCart = carts.getCartProductsByUserId(AppSession.currentUserId).size();
             System.out.println(CYAN + "=== CART ===" + RESET);
             if(totalItemsInCart == 0){
                 System.out.println(GREEN + "Cart is Empty" + RESET);
@@ -503,18 +517,14 @@ public class Main {
                             switch (inp){
                                 case 1:
                                 buyProduct(prod, c.getAmount());
-                                AppSession.previousPage = pagenumber;
-                                cartPage();
-                                break;
+                                continue;
                                 case 2:
                                 int amount = readIntInput("Enter amount to delete: ");
                                 if(c.getAmount() <= amount){
                                     c.DeleteFromDataBase();
                                     cartList.remove(c);
                                     System.out.println(GREEN + "Product Successfuly Removed From Cart" + RESET);
-                                    AppSession.previousPage = pagenumber;
-                                    cartPage();
-                                    break;
+                                    continue;
                                 }else{
                                     c.updateCartProduct(c.getAmount() - amount);
                                     System.out.println(GREEN + amount + " unit(s) of " + prod.getName() + " left in your cart." + RESET);
@@ -522,9 +532,7 @@ public class Main {
                                     break;
                                 }
                                 case 3:
-                                AppSession.previousPage = pagenumber;
-                                cartPage();
-                                return;
+                                continue;
                                 default:
                                 System.out.println(RED + "Please select valid option" + RESET);
                                 System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
@@ -549,15 +557,11 @@ public class Main {
 
     //Purchases Page
     public void purchasesPage(){
-
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
-        int purchaseCount = 0;
         while(true){
             System.out.println(CYAN + "=== PURCHASE HISTORY ===" + RESET);
-            for(Purchase pur : purchases.getAllPurchasesByUserId(AppSession.currentUserId)){
-                purchaseCount++;
-            }
+            int purchaseCount = purchases.getAllPurchasesByUserId(AppSession.currentUserId).size();
             if(purchaseCount > 0){
                 getPurchaseHistory();
                 System.out.printf(YELLOW + "%-20s %-20s\n" + RESET , " 1. Request Refund: " , " 2. Main Menu");;
@@ -565,9 +569,9 @@ public class Main {
                 switch(input){
                     case 1:
                     while(true){
-                        int i = readIntInput("Enter Product ID");
+                        int i = readIntInput("Enter Purchase ID: ");
                         for(Purchase pur: purchaseList){
-                            if(i == pur.getProductId()){
+                            if(i == pur.getId()){
                                 System.out.printf(GREEN + "%-20s"+ RED +"%-20s\n" + RESET , " 1. Confirm " , " 2. Cancel");
                                 int option = readIntInput("Select an option: ");
                                 switch (option){
@@ -581,7 +585,6 @@ public class Main {
                                     default:
                                     System.out.println(RED + "Please select valid option" + RESET);
                                     System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
-
                                     break;
                                 }
                             }
@@ -602,7 +605,6 @@ public class Main {
                 AppSession.previousPage = pagenumber;
                 mainPage();
             }
-            
         }
     }
 
@@ -794,8 +796,6 @@ public class Main {
     }
 
 
-
-
     // Help
     public static void printHelp(){
         System.out.println("Type " + MAGENTA + "'back'" + RESET + " to go to the " + YELLOW + "previous page" + RESET + ".");
@@ -816,7 +816,6 @@ public class Main {
 
 
     // GETTING INFO
-
     //Name
     public String AskName(){
 
@@ -896,7 +895,6 @@ public class Main {
             System.out.println(RED + "Password must be at least 8 characters" + RESET);
             return false;
         }
-        
 
         if(!password.matches(".*[A-Z].*")){
             System.out.println(RED + "Password must contain at least 1 capital letter" + RESET);
@@ -970,16 +968,15 @@ public class Main {
     //Purchase History
     public void getPurchaseHistory(){
         System.out.printf(
-        YELLOW + "%-10s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + 
+        YELLOW + "%-15s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + 
         BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
-        "Id", "Name", "Price", "Amount", "Seller", "Date");
+        " Purchase Id", "Name", "Price", "Amount", "Seller", "Date");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
             System.out.printf(YELLOW + "%-10d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
             BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
-            p.getProductId(),prod.getName(), prod.getPrice() , p.getAmount() ,
+            p.getId(),prod.getName(), prod.getPrice() , p.getAmount() ,
             users.getUserById(p.getSellerId()).getName() , p.getDateString());
-            
         }
     }
 
