@@ -73,81 +73,33 @@ public class Main {
             }
             return "";
         case "menu":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            mainPage();
-            break;
+            return goToIfLoggedIn(2); // mainPage
 
         case "market":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            marketPage();
-            break;
+            return goToIfLoggedIn(3); // marketPage
 
         case "profile":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            profilePage();
-            break;
+            return goToIfLoggedIn(4); // profilePage
 
         case "wallet":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            walletPage();
-            break;
+            return goToIfLoggedIn(5); // walletPage
 
         case "cart":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            cartPage();
-            break;
+            return goToIfLoggedIn(6); // cartPage
 
         case "fav":
         case "favorites":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            favoritesPage();
-            break;
+            return goToIfLoggedIn(9); // favoritesPage
 
         case "purch":
         case "purchases":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            purchasesPage();
-            break;
+            return goToIfLoggedIn(7); // purchasesPage
 
         case "add":
-            if(AppSession.currentUser == null){
-                System.out.println(RED + "You haven't logged in yet" + RESET);
-                break;
-            }
-            AppSession.previousPage = AppSession.currentPage;
-            AddProductPage();
-            break;
-        }
-        
-        return input;
+            return goToIfLoggedIn(8); // AddProductPage
+    }
+
+    return input;
     }
 
     private int readIntInput(String prompt) {
@@ -373,10 +325,21 @@ public class Main {
                         }
                         break;
                         case 3:
-                        Favorites f = new Favorites(p.getId(), AppSession.currentUserId);
-                        f.AddToDataBase();
-                        favoritesList.add(f);
-                        System.out.println(GREEN + "Successfully Added to Your Favorites" + RESET);
+                        boolean inFav = false;
+                        for(Favorites fav: favorites.getFavoritesByUserId(AppSession.currentUserId)){
+                            if(fav.getProductId() == p.getId()){
+                                System.out.println(RED + "Product is already in Favorites" + RESET);
+                                inFav = true;
+                                break;
+                            }
+                        }
+                        if(!inFav){
+                            Favorites f = new Favorites(AppSession.currentUserId , p.getId());
+                            f.AddToDataBase();
+                            favoritesList.add(f);
+                            System.out.println(GREEN + "Successfully Added to Your Favorites" + RESET);
+                            break;
+                        }
                         break;
                         default:
                         System.out.println(RED + "Please select valid option" + RESET);
@@ -640,7 +603,9 @@ public class Main {
         AppSession.currentPage = pagenumber;
         int favotiresCount = favorites.getFavoritesByUserId(AppSession.currentUserId).size();
         if(favotiresCount == 0){
-
+            System.out.println(RED + "Favorites empty" + RESET);
+            navigateToPage(AppSession.previousPage);
+            return;
         }
         while(true){
             System.out.println(CYAN + "=== FAVORITES ===" + RESET);
@@ -666,17 +631,18 @@ public class Main {
                                     Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
                                     c.AddToDataBase();
                                     cartList.add(c);
-                                    AppSession.previousPage = pagenumber;
+                                    System.out.println(GREEN + "Added to cart." + RESET);
                                     favoritesPage();
                                     break;
                                     case 2:
                                     f.DeleteFromDataBase();
                                     favoritesList.remove(f);
-                                    AppSession.previousPage = pagenumber;
+                                    System.out.println(GREEN + "Removed from favorites." + RESET);
                                     favoritesPage();
                                     break;
                                     default:
                                     System.out.println(RED + "Please select valid option" + RESET);
+                                    System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
                                     break;
                                 }
                             }
