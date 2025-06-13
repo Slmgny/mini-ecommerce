@@ -1,6 +1,7 @@
 package com.github.daymoon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import com.github.daymoon.DAO.CartDAO;
@@ -525,6 +526,7 @@ public class Main {
     public void purchasesPage(){
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
+        boolean found = false;
         while(true){
             System.out.println(CYAN + "=== PURCHASE HISTORY ===" + RESET);
             int purchaseCount = purchases.getAllPurchasesByUserId(AppSession.currentUserId).size();
@@ -536,26 +538,35 @@ public class Main {
                     case 1:
                     while(true){
                         int i = readIntInput("Enter Purchase ID: ");
-                        for(Purchase pur: purchaseList){
-                            if(i == pur.getId()){
-                                System.out.printf(GREEN + "%-20s"+ RED +"%-20s\n" + RESET , " 1. Confirm " , " 2. Cancel");
+                        Iterator <Purchase> iterator = purchaseList.iterator(); 
+                        while (iterator.hasNext()) {
+                            Purchase pur = iterator.next();
+                            if (pur.getId() == i) {
+                                System.out.printf(GREEN + "%-20s" + RED + "%-20s\n" + RESET, " 1. Confirm ", " 2. Cancel");
                                 int option = readIntInput("Select an option: ");
-                                switch (option){
+                                switch (option) {
                                     case 1:
-                                    double price = products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
-                                    AppSession.currentUser.depositMoney(price);
-                                    pur.DeleteFromDataBase();
-                                    break;
+                                        double price = products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
+                                        AppSession.currentUser.depositMoney(price);
+                                        iterator.remove(); // ✅ Güvenli silme
+                                        pur.DeleteFromDataBase();
+                                        System.out.println(GREEN + "Refund completed." + RESET);
+                                        break;
                                     case 2:
-                                    break;
+                                        System.out.println(YELLOW + "Cancelled." + RESET);
+                                        break;
                                     default:
-                                    System.out.println(RED + "Please select valid option" + RESET);
-                                    System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
-                                    break;
+                                        System.out.println(RED + "Please select a valid option." + RESET);
+                                        break;
                                 }
+                                found = true;
+                                break;
                             }
                         }
-                        break;
+                    if (!found) {
+                    System.out.println(RED + "Purchase not found." + RESET);
+                    }
+                    break;
                     }
                     case 2:
                     AppSession.previousPage = pagenumber;
@@ -905,6 +916,7 @@ public class Main {
     //LISTS
     //Product List
     public void getAllProducts(){
+        
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
             if(p.getStock() > 0){
@@ -967,7 +979,6 @@ public class Main {
 
 
 
-
     //BUY
     //Buy Product
     public void buyProduct(Product p , int amount){
@@ -984,6 +995,7 @@ public class Main {
             AppSession.currentUser.Pay(price);
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println(GREEN + "Purchase successful!" + RESET);
+            System.out.println(GREEN +"New Balance: " + AppSession.currentUser.getMoney() + RESET);
         }
     }
 

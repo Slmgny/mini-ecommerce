@@ -80,16 +80,17 @@ public abstract class User {
     public void depositMoney(double depositMoney){
         this.money += depositMoney;
         if(AppSession.currentUserId == this.id)
-        System.out.println("New balance: " + this.money);
-        updateUser(name, password, money);
+            System.out.println("New balance: " + this.money);
+            updateUser(name, password, money);
     }
     public void Pay(double pay){
         if(money < pay){
-        System.out.println("Payment Error");
+            System.out.println("Payment Error");
         }else{
-        this.money -= pay;
+            this.money -= pay;
+            updateUser(name, password, money);
         }
-        updateUser(name, password, money);
+        
         
     }
 
