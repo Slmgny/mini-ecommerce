@@ -907,9 +907,10 @@ public class Main {
     public void getAllProducts(){
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
+            if(p.getStock() > 0){
                 System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-15s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
                 p.getDescription());
-                System.out.println(p.getStock());
+            }
         }
     }
 
@@ -979,7 +980,7 @@ public class Main {
             Purchase pur = new Purchase(amount, AppSession.currentUserId, p.getSellerId(), p.getId());
             pur.AddToDataBase();
             purchaseList.add(pur);
-            p.SellProduct();
+            p.SellProduct(amount);
             AppSession.currentUser.Pay(price);
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println(GREEN + "Purchase successful!" + RESET);

@@ -86,9 +86,9 @@ public class Product {
 
 
 
-    public void SellProduct(){
-        stock--;
-        sellCount++;
+    public void SellProduct(int amount){
+        stock -= amount;
+        sellCount += amount;
         updateProduct(name, price, sellCount, stock, description);
     }
 

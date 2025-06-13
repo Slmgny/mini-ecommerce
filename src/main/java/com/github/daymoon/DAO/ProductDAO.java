@@ -13,7 +13,6 @@ public class ProductDAO {
     public ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
 
-
         String sql = "SELECT id, name, price, stock, sellCount, sellerId , description FROM Product";
 
         try (Connection conn = DBConnection.connect();
@@ -30,7 +29,7 @@ public class ProductDAO {
                 String description = rs.getString("description");
 
 
-                Product product = new Product(id, name, price, stock, sellCount , sellerId , description);
+                Product product = new Product(id, name, price, sellCount , stock , sellerId , description);
                 products.add(product);
             }
 
@@ -45,7 +44,6 @@ public class ProductDAO {
     //By User Id
     public ArrayList<Product> getAllProductsBySellerId(int UserId) {
         ArrayList<Product> products = new ArrayList<>();
-
 
         String sql = "SELECT id, name, price, stock, sellCount, sellerId, description FROM Product WHERE sellerId = ?";
 
@@ -77,7 +75,6 @@ public class ProductDAO {
     }
 
     public Product getProductById(int productId){
-
 
         String sql = "SELECT id, name, price, stock, sellCount, sellerId , description FROM Product WHERE id = ?";
         Product product = null;
