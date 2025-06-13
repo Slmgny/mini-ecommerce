@@ -118,25 +118,41 @@ public class Product {
     }
 
 
-    public void DeleteFromDataBase(){
+    public void DeleteFromDataBase() {
+        try (Connection conn = DBConnection.connect()) {
+            // Favorilerden sil
+            String deleteFavoritesSql = "DELETE FROM Favorites WHERE productId = ?";
+            PreparedStatement favPst = conn.prepareStatement(deleteFavoritesSql);
+            favPst.setInt(1, this.id);
+            favPst.executeUpdate();
 
-        try(Connection conn = DBConnection.connect()){
-            String sql = "DELETE FROM Products WHERE id = ?";
-            PreparedStatement pst = conn.prepareStatement(sql);
+            // Sepetten sil
+            String deleteCartSql = "DELETE FROM Cart WHERE productId = ?";
+            PreparedStatement cartPst = conn.prepareStatement(deleteCartSql);
+            cartPst.setInt(1, this.id);
+            cartPst.executeUpdate();
+
+            // Satın alma geçmişinden sil
+            String deletePurchaseSql = "DELETE FROM Purchase WHERE productId = ?";
+            PreparedStatement purPst = conn.prepareStatement(deletePurchaseSql);
+            purPst.setInt(1, this.id);
+            purPst.executeUpdate();
+
+            // Ürünü sil
+            String deleteProductSql = "DELETE FROM Product WHERE id = ?";
+            PreparedStatement pst = conn.prepareStatement(deleteProductSql);
             pst.setInt(1, this.id);
-
             int deleted = pst.executeUpdate();
 
-            if(deleted>0){
-                System.out.println("Product Successfully Deleted!");
-            }else{
-                System.out.println("Failed to Find the Product");
+            if (deleted > 0) {
+                System.out.println("Product and all related data successfully deleted!");
+            } else {
+                System.out.println("Failed to find the product.");
             }
 
-        }catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+        e.printStackTrace();
         }
-
     }
 
     
@@ -161,7 +177,5 @@ public class Product {
             return false;
         }
     }
-
-
     
 }

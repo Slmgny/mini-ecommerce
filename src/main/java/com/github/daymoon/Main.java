@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
+
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.FavoritesDAO;
 import com.github.daymoon.DAO.ProductDAO;
@@ -64,8 +65,14 @@ public class Main {
             LoginOrSignUpPage();
             break;
         case "back":
-            if (!navigateToPage(AppSession.previousPage)) {
-                System.out.println(RED + "There is no previous page." + RESET);
+           if (AppSession.currentUser == null) {
+                System.out.println(RED + "You haven't logged in yet" + RESET);
+                return readInput(prompt);
+            } else {
+                if (!navigateToPage(AppSession.previousPage)) {
+                    System.out.println(RED + "You can't go to previous page." + RESET);
+                    return readInput(prompt);
+                }
             }
             return "";
         case "cancel":
@@ -548,7 +555,7 @@ public class Main {
                                     case 1:
                                         double price = products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
                                         AppSession.currentUser.depositMoney(price);
-                                        iterator.remove(); // ✅ Güvenli silme
+                                        iterator.remove();
                                         pur.DeleteFromDataBase();
                                         System.out.println(GREEN + "Refund completed." + RESET);
                                         break;
@@ -678,9 +685,23 @@ public class Main {
                 break;
                 case 3:
                 for(Favorites f: favorites.getFavoritesByUserId(AppSession.currentUserId)){
-                    Cart c = new Cart(AppSession.currentUserId, f.getProductId(), 1);
-                    c.AddToDataBase();
-                    cartList.add(c);
+                    boolean found = false;
+                    Product prod = products.getProductById(f.getProductId());
+                    int amount = readIntInput("Enter amount for " + prod.getName() + ": ");
+                    Iterator<Cart> iter = cartList.iterator();
+                    while(iter.hasNext()){
+                        Cart cart = iter.next();
+                        if(cart.getProductId() == prod.getId()){
+                            cart.setAmount(cart.getAmount() + amount);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found){
+                        Cart c = new Cart(AppSession.currentUserId, f.getProductId(), amount);
+                        c.AddToDataBase();
+                        cartList.add(c);
+                    }
                 }
                 AppSession.previousPage = pagenumber;
                 cartPage();
@@ -712,8 +733,8 @@ public class Main {
                             System.out.printf(YELLOW + "%-10d"+ CYAN +"%-20s"+ GREEN +"%-10.2f"+ MAGENTA +"%-10d"+ BLUE +"%-17d"+ WHITE +"%-10s\n"+ RESET,
                             p.getId() , p.getName(), p.getPrice() , p.getStock(),
                             p.getSellCount(),p.getDescription());
-                            System.out.printf(YELLOW  + "%-20s %-20s %-20s %-20s %-20 %-20\n" + RESET , " 1. Change Name " , " 2. Change Price " 
-                            , " 3. Change Stock ", " 4. Change Description " , "5. Delete Product" , " 6. Exit");
+                            System.out.printf(YELLOW  + "%-20s %-20s %-20s %-20s %-20s %-20s\n" + RESET , " 1. Change Name " , " 2. Change Price " 
+                            , " 3. Change Stock ", " 4. Change Description " , " 5. Delete Product" , " 6. Exit");
                             int option = readIntInput("Select an option: ");
                             switch (option){
                                 case 1:
@@ -748,7 +769,7 @@ public class Main {
                                 p.DeleteFromDataBase();
                                 productList.remove(p);
                                 System.out.println(GREEN + "Successfuly Deleted the Product" + RESET);
-                                break;
+                                navigateToPage(pagenumber);
                                 case 6:
                                 AppSession.previousPage = pagenumber;
                                 profilePage();
@@ -806,7 +827,7 @@ public class Main {
         Boolean isCorrect = false;
         while(!isCorrect){
             String name = readInput("Name: ");
-            if(name.length() < 4){
+            if(name.length() <= 4){
                 System.out.println(RED + "User Name must be at least 4 characters" + RESET);
                 continue;
         }
@@ -955,15 +976,17 @@ public class Main {
     //Purchase History
     public void getPurchaseHistory(){
         System.out.printf(
-        YELLOW + "%-15s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + 
-        BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
-        " Purchase Id", "Name", "Price", "Amount", "Seller", "Date");
+        YELLOW + "%-15s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + GREEN + "%-15s" +
+        BLUE + "%-15s" + WHITE + "%-13s\n" + RESET,
+        "Purchase Id", "Name", "Price", "Amount", "Total Price" ,"Seller", "Date");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
-            System.out.printf(YELLOW + "%-15d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
-            BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
-            p.getId(),prod.getName(), prod.getPrice() , p.getAmount() ,
-            users.getUserById(p.getSellerId()).getName() , p.getDateString());
+            double totalPrice = p.getAmount() * prod.getPrice();
+            String sellerName = users.getUserById(p.getSellerId()).getName();
+            System.out.printf(
+            YELLOW + "%-15d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
+            GREEN + "%-15.2f" + BLUE + "%-15s" + WHITE + "%-13s\n" + RESET,
+            p.getId(), prod.getName(), prod.getPrice(), p.getAmount(), totalPrice, sellerName, p.getDateString());
         }
     }
 

@@ -22,6 +22,7 @@ public class Cart {
 
     public void setAmount(int amount) {
         this.amount = amount;
+        updateCartProduct(amount);
     }
 
 
