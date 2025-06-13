@@ -312,7 +312,21 @@ public class Main {
                             System.out.println(RED + "Amount can't be less than 1" + RESET);
                             break;
                         }
-                        buyProduct(p, pAmount);
+                        while(true){
+                            System.out.printf(GREEN + "%-20s" + RED + "%-20s\n" + RESET, " 1. Confirm ", " 2. Cancel");
+                            int option = readIntInput("Select an option: ");
+                            switch (option){
+                                case 1:
+                                buyProduct(p, pAmount);
+                                break;
+                                case 2:
+                                break;
+                                default:
+                                System.out.println("Please select valid option");
+                                continue;
+                            }
+                            break;
+                        }
                         break;
                         case 2:
                         int amount = readIntInput("Enter the Amount: ");
@@ -468,12 +482,25 @@ public class Main {
                 int input = readIntInput("Select an option: ");
                 switch (input){
                     case 1:
-                    buyCart();
+                    while(true){
+                        System.out.printf(GREEN + "%-20s" + RED + "%-20s\n" + RESET, " 1. Confirm ", " 2. Cancel");
+                        int option = readIntInput("Select an option: ");
+                        switch (option){
+                            case 1:
+                            buyCart();
+                            break;
+                            case 2:
+                            break;
+                            default:
+                            System.out.println("Please select valid option");
+                            continue;
+                        }
+                        break;
+                    }
                     break;
                     case 2:
                     for(Cart c: carts.getCartProductsByUserId(AppSession.currentUserId)){
                         c.DeleteFromDataBase();
-                        totalItemsInCart++;
                     }
                     if(totalItemsInCart == 0){
                         System.out.println(RED + "Cart Is Empty" + RESET);
@@ -490,8 +517,22 @@ public class Main {
                             int inp = readIntInput("Select and option: ");
                             switch (inp){
                                 case 1:
-                                buyProduct(prod, c.getAmount());
-                                continue;
+                                while(true){
+                                    System.out.printf(GREEN + "%-20s" + RED + "%-20s\n" + RESET, " 1. Confirm ", " 2. Cancel");
+                                    int option = readIntInput("Select an option: ");
+                                    switch (option){
+                                        case 1:
+                                        buyProduct(prod, c.getAmount());
+                                        break;
+                                        case 2:
+                                        break;
+                                        default:
+                                        System.out.println("Please select valid option");
+                                        continue;
+                                    }
+                                    break;
+                                }
+                                break;
                                 case 2:
                                 int amount = readIntInput("Enter amount to delete: ");
                                 if(c.getAmount() <= amount){
@@ -1018,7 +1059,9 @@ public class Main {
             AppSession.currentUser.Pay(price);
             users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println(GREEN + "Purchase successful!" + RESET);
-            System.out.println(GREEN +"New Balance: " + AppSession.currentUser.getMoney() + RESET);
+            System.out.println(RED +"Total Price: " + price + RESET);
+            System.out.printf(GREEN + "New Balance: %.2f" + RESET + "\n", AppSession.currentUser.getMoney());
+
         }
     }
 
@@ -1047,13 +1090,15 @@ public class Main {
                 pur.AddToDataBase();
                 purchaseList.add(pur);
                 AppSession.currentUser.Pay(price);
+                p.SellProduct(c.getAmount());
                 seller.depositMoney(price);
                 c.DeleteFromDataBase();
                 cartList.remove(c);
             }
             System.out.println(GREEN +"Successful! Items in your cart have been purchased." + RESET);
             System.out.println(RED +"Total Price: " + totalPrice + RESET);
-            System.out.println(GREEN +"New Balance: " + AppSession.currentUser.getMoney() + RESET);
+            System.out.printf(GREEN + "New Balance: %.2f" + RESET + "\n", AppSession.currentUser.getMoney());
+
             }
     }
 
