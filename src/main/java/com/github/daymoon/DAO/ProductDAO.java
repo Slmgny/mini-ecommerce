@@ -91,8 +91,8 @@ public class ProductDAO {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 double price = rs.getDouble("price");
-                int stock = rs.getInt("stock");
                 int sellCount = rs.getInt("sellCount");
+                int stock = rs.getInt("stock");
                 int sellerId = rs.getInt("sellerId");
                 String description = rs.getString("description");
 

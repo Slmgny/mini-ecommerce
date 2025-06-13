@@ -97,6 +97,10 @@ public class Main {
 
         case "add":
             return goToIfLoggedIn(8); // AddProductPage
+        case "user":
+            System.out.println(AppSession.currentUser);
+            readInput(prompt);
+            break;
     }
 
     return input;
@@ -181,11 +185,11 @@ public class Main {
         System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
         String userName = AskName();
         boolean newUser = true;
+        User currentUser = null;
         for(User u: userList){
             if(u.getName().equals(userName)){
                 newUser = false;
-                AppSession.currentUser = u;
-                AppSession.currentUserId = u.getId();
+                currentUser = u;
                 break;
             }
         }
@@ -205,12 +209,13 @@ public class Main {
         }else{ // Login
             System.out.println(CYAN + "=== LOG IN ===" + RESET);
             String password = readInput("Enter Your Password: ");
-            while(!isPasswordCorrect(password)){
+            while(!isPasswordCorrect(password , currentUser)){
                 System.out.println(RED + "Incorrect Password" + RESET);
                 password = readInput("Enter Your Password: ");
             }
+            AppSession.currentUser = currentUser;
+            AppSession.currentUserId = currentUser.getId();
             AppSession.previousPage = pagenumber;
-            System.out.println("User Id: " + AppSession.currentUserId);
             mainPage();
         }
     }
@@ -369,7 +374,7 @@ public class Main {
             switch (input){
                 case 1:
                 String password = readInput("Enter Your Password: ");
-                while(!isPasswordCorrect(password)){
+                while(!isPasswordCorrect(password , AppSession.currentUser)){
                     System.out.println(RED + "Wrong Password!" + RESET);
                     password = readInput("Enter Your Password: ");
                     
@@ -382,7 +387,7 @@ public class Main {
                 continue;
                 case 2:
                 String password2 = readInput("Enter Your Password: ");
-                while(!isPasswordCorrect(password2)){
+                while(!isPasswordCorrect(password2 , AppSession.currentUser)){
                     System.out.println(RED + "Wrong Password!" + RESET);
                     password2 = readInput("Enter Your Password: ");
                 }
@@ -446,7 +451,7 @@ public class Main {
             int totalItemsInCart = carts.getCartProductsByUserId(AppSession.currentUserId).size();
             System.out.println(CYAN + "=== CART ===" + RESET);
             if(totalItemsInCart == 0){
-                System.out.println(GREEN + "Cart is Empty" + RESET);
+                System.out.println(RED + "Cart is Empty" + RESET);
                 AppSession.previousPage = pagenumber;
                 mainPage();
             }else{
@@ -881,8 +886,8 @@ public class Main {
 
         return true;
     }
-    public static Boolean isPasswordCorrect(String password){
-        return AppSession.currentUser.getPassword().equals(password);
+    public static Boolean isPasswordCorrect(String password , User u){
+        return u.getPassword().equals(password);
     }
 
     
@@ -902,8 +907,9 @@ public class Main {
     public void getAllProducts(){
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: productList){
-            System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-20s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
-             p.getDescription());
+                System.out.printf(  YELLOW + "%-10d"+ CYAN +"%-15s" + GREEN +"%-10.2f"+ WHITE +"%-10s\n" + RESET, p.getId() , p.getName(), p.getPrice() ,
+                p.getDescription());
+                System.out.println(p.getStock());
         }
     }
 
@@ -929,8 +935,8 @@ public class Main {
             System.out.printf( YELLOW + "%-10d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d\n" + RESET, c.getProductId(),
             prod.getName(), prod.getPrice() , c.getAmount());
             totalPrice += prod.getPrice() * c.getAmount();
-            System.out.println("Total: " + totalPrice + " $");
         }
+        System.out.println("Total: " + totalPrice + " $");
     }
 
     //Purchase History
@@ -941,7 +947,7 @@ public class Main {
         " Purchase Id", "Name", "Price", "Amount", "Seller", "Date");
         for(Purchase p: purchaseList){
             Product prod = products.getProductById(p.getProductId());
-            System.out.printf(YELLOW + "%-10d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
+            System.out.printf(YELLOW + "%-15d" + CYAN + "%-20s" + GREEN + "%-10.2f" + MAGENTA + "%-10d" +
             BLUE + "%-15s" + WHITE + "%-15s\n" + RESET,
             p.getId(),prod.getName(), prod.getPrice() , p.getAmount() ,
             users.getUserById(p.getSellerId()).getName() , p.getDateString());

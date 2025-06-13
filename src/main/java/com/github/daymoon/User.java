@@ -78,7 +78,7 @@ public abstract class User {
 
     // Wallet
     public void depositMoney(double depositMoney){
-        this.money =+ depositMoney;
+        this.money += depositMoney;
         if(AppSession.currentUserId == this.id)
         System.out.println("New balance: " + this.money);
         updateUser(name, password, money);
@@ -91,6 +91,12 @@ public abstract class User {
         }
         updateUser(name, password, money);
         
+    }
+
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", name=" + name + ", userType=" + userType + ", money=" + money + "]";
     }
 
 
