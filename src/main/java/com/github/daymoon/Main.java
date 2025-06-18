@@ -104,7 +104,7 @@ public class Main {
             return goToIfLoggedIn(7); // purchasesPage
 
         case "add":
-            return goToIfLoggedIn(8); // AddProductPage
+            return goToIfLoggedIn(8); // addProductPage
         case "user":
             System.out.println(AppSession.currentUser);
             readInput(prompt);
