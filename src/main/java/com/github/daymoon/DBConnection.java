@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    private static final String URL = "jdbc:sqlite:C:\\Java\\mini-ecommerce\\DataBase\\mini-ecommerce-database.db";
+    private static final String URL = "jdbc:sqlite:C:\\Java\\Mini E-Commerce\\database\\mini-ecommerce-database.db";
 
     public static Connection connect() {
         try {
