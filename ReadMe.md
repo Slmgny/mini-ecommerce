@@ -16,6 +16,7 @@ This is a simple console-based e-commerce app developed in Java.
 
 ## Technologies
 - Java
+- Maven
 - SQLite
 - JDBC
 
