@@ -1,16 +1,15 @@
 
 target/
-build/
 
 
 *.class
 
 
-.idea/
-*.iml
-*.ipr
-*.iws
+*.log
+
+
 .vscode/
+
 
 .DS_Store
 Thumbs.db
