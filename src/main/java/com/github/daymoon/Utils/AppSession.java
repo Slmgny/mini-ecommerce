@@ -1,4 +1,6 @@
-package com.github.daymoon;
+package com.github.daymoon.Utils;
+
+import com.github.daymoon.Models.User;
 
 public class AppSession {
     
