@@ -11,7 +11,7 @@ import com.github.daymoon.Utils.AppSession;
 
 public class Lists {
 
-    public void getUsersProducts(){
+    public static void getUsersProducts(){
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s"+ GREEN +"%-10s"+ MAGENTA +"%-10s"+ BLUE +"%-10s"+ WHITE +"%-10s\n"+ RESET,
          "Id" , "Name", "Price"  , "Stock" , "Total Purchases" , "Description\n");
         for(Product p: ArrayLists.products.getAllProductsBySellerId(AppSession.currentUserId)){
@@ -20,7 +20,7 @@ public class Lists {
             , p.getSellCount(),p.getDescription());
         }
     }
-    public void getPurchaseHistory(){
+    public static void getPurchaseHistory(){
         System.out.printf(
         YELLOW + "%-15s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s" + GREEN + "%-15s" +
         BLUE + "%-15s" + WHITE + "%-13s\n" + RESET,
@@ -35,7 +35,7 @@ public class Lists {
             p.getId(), prod.getName(), prod.getPrice(), p.getAmount(), totalPrice, sellerName, p.getDateString());
         }
     }
-    public void getAllProducts(){
+    public static void getAllProducts(){
         
         System.out.printf(YELLOW + "%-10s"+ CYAN +"%-15s" + GREEN +"%-10s"+ WHITE +"%-10s\n" + RESET, "Id" , "Name", "Price" , "Description\n");
         for(Product p: ArrayLists.productList){
@@ -45,7 +45,7 @@ public class Lists {
             }
         }
     }
-    public void getFavorites(){
+    public static void getFavorites(){
         System.out.printf(YELLOW + "%-10s" + MAGENTA + "%-20s" + GREEN + "%-10s\n" + RESET, "Id" , "Name", "Price");
         for(Favorites f: ArrayLists.favorites.getFavoritesByUserId(AppSession.currentUserId)){
             Product prod = ArrayLists.products.getProductById(f.getProductId());
@@ -53,7 +53,7 @@ public class Lists {
             prod.getName(), prod.getPrice());
         }
     }
-    public void getUserCart(){
+    public static void getUserCart(){
         double totalPrice = 0;
         System.out.printf(
         YELLOW + "%-10s" + CYAN + "%-20s" + GREEN + "%-10s" + MAGENTA + "%-10s\n" + RESET,

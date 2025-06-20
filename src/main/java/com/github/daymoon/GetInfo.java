@@ -6,7 +6,7 @@ import com.github.daymoon.Utils.ReadInput;
 
 public class GetInfo {
 
-    public String askName(){
+    public static String askName(){
 
         Boolean isCorrect = false;
         while(!isCorrect){
@@ -25,7 +25,8 @@ public class GetInfo {
         return null;
 
     }
-    public double askPrice(){
+    
+    public static double askPrice(){
 
         Boolean isCorrect = false;
         while(!isCorrect){
@@ -39,7 +40,8 @@ public class GetInfo {
         }
         return -1;
     }
-    public String askProductName(){
+
+    public static String askProductName(){
 
         Boolean isCorrect = false;
         while(!isCorrect){
@@ -58,7 +60,8 @@ public class GetInfo {
         return null;
 
     }
-    public int askStock(){
+
+    public static int askStock(){
 
         Boolean isCorrect = false;
         while(!isCorrect){

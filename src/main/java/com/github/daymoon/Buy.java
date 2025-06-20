@@ -8,7 +8,7 @@ import com.github.daymoon.Utils.AppSession;
 public class Buy {
     
     //CART
-    public void buyCart(){
+    public static void buyCart(){
         double totalPrice = 0;
         boolean canBuy = true;
         for(Cart c : ArrayLists.carts.getCartProductsByUserId(AppSession.currentUserId)){
@@ -45,7 +45,7 @@ public class Buy {
     }
 
     //PRODUCT
-    public void buyProduct(Product p , int amount){
+    public static void buyProduct(Product p , int amount){
         double price = p.getPrice() * amount;
         if(AppSession.currentUser.getMoney() < price){
             System.out.println(RED + "Failed to Purchase. Insufficient balance" + RESET);

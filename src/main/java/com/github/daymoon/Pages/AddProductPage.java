@@ -1,12 +1,15 @@
 package com.github.daymoon.Pages;
 import static com.github.daymoon.Utils.TextColors.*;
 
+import com.github.daymoon.ArrayLists;
+import com.github.daymoon.GetInfo;
 import com.github.daymoon.Models.Product;
 import com.github.daymoon.Utils.AppSession;
+import com.github.daymoon.Utils.ReadInput;
 
 public class AddProductPage {
     //Add Product Page
-    public void openPage(){
+    public static void openPage(){
         int pagenumber = 8;
         AppSession.currentPage = pagenumber;
         String pName;
@@ -19,17 +22,17 @@ public class AddProductPage {
         System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);
 
         while(true){
-            pName = AskName();
-            pPrice = AskPrice();
-            pStock = AskStock();
-            pDesc = readInput("(Optional) Description: ");
+            pName = GetInfo.askName();
+            pPrice = GetInfo.askPrice();
+            pStock = GetInfo.askStock();
+            pDesc = ReadInput.readInput("(Optional) Description: ");
             
             Product product = new Product(pName, pPrice, pStock, pDesc);
             product.setSellerId(AppSession.currentUserId);
             product.AddToDataBase();
-            productList.add(product);
+            ArrayLists.productList.add(product);
             System.out.println("Product Added!");
-            readInput(YELLOW + "Type " + MAGENTA  + "'menu' " + YELLOW +"to go back to the main menu or press Enter to add another product: "+ RESET);
+            ReadInput.readInput(YELLOW + "Type " + MAGENTA  + "'menu' " + YELLOW +"to go back to the main menu or press Enter to add another product: "+ RESET);
         }
     }
 }
