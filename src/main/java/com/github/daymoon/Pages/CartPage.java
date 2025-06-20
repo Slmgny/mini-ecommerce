@@ -13,8 +13,8 @@ import com.github.daymoon.Utils.ReadInput;
 
 public class CartPage {
 
+    static int pagenumber = 6;
     public static void openPage(){
-        int pagenumber = 6;
         AppSession.currentPage = pagenumber;
         while(true){
             int totalItemsInCart = ArrayLists.carts.getCartProductsByUserId(AppSession.currentUserId).size();
@@ -105,7 +105,7 @@ public class CartPage {
                     break;
                     case 4:
                     AppSession.previousPage = pagenumber;
-                    navigateToPage(2);
+                    navigateToPage(MainPage.pagenumber);
                     return;
                     default:
                     System.out.println(RED + "Please select valid option" + RESET);

@@ -1,6 +1,6 @@
 package com.github.daymoon.Pages;
 
-import static com.github.daymoon.Navigate.navigateToPage;
+import static com.github.daymoon.Navigate.*;
 import static com.github.daymoon.Utils.TextColors.*;
 
 import com.github.daymoon.ArrayLists;
@@ -12,9 +12,9 @@ import com.github.daymoon.Utils.AppSession;
 import com.github.daymoon.Utils.ReadInput;
 
 public class AuthPage {
-    //Login Sign Up Page
+    
+    static int pagenumber = 1;
     public static void openPage(){
-        int pagenumber = 1;
         AppSession.currentPage = pagenumber;
         System.out.println(CYAN + "=== LOG IN OR SIGN UP ===" + RESET);
         System.out.println(YELLOW + "You can type '" + MAGENTA + "help" + YELLOW + "' to see the available commands" + RESET);

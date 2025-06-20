@@ -1,23 +1,29 @@
 package com.github.daymoon.Pages;
 import static com.github.daymoon.Utils.TextColors.*;
+import static com.github.daymoon.Navigate.*;
 
+import com.github.daymoon.ArrayLists;
+import com.github.daymoon.GetInfo;
+import com.github.daymoon.Lists;
 import com.github.daymoon.Models.Product;
 import com.github.daymoon.Utils.AppSession;
+import com.github.daymoon.Utils.ReadInput;
 
 public class UserProductsPage {
-    public void openPage(){
-        int pagenumber = 10;
+
+    static int pagenumber = 10;
+    public static void openPage(){    
         AppSession.currentPage = pagenumber;
         System.out.println(CYAN + "===YOUR PRODUCTS===" + RESET);
         while(true){
-            getUsersProducts();
+            Lists.getUsersProducts();
             System.out.printf(YELLOW + "\n%-20s %-20s\n" + RESET , " 1. Edit Product " , " 2. Go Back ");
-            int i = readIntInput("Select an option: ");
+            int i = ReadInput.readIntInput("Select an option: ");
             switch (i){
                 case 1:
-                int inp = readIntInput("Enter Product ID: ");
+                int inp = ReadInput.readIntInput("Enter Product ID: ");
                 boolean found = false;
-                for(Product p: products.getAllProductsBySellerId(AppSession.currentUserId)){
+                for(Product p: ArrayLists.products.getAllProductsBySellerId(AppSession.currentUserId)){
                     if(inp == p.getId()){
                         found = true;
                         while(true){
@@ -26,44 +32,44 @@ public class UserProductsPage {
                             p.getSellCount(),p.getDescription());
                             System.out.printf(YELLOW  + "%-20s %-20s %-20s %-20s %-20s %-20s\n" + RESET , " 1. Change Name " , " 2. Change Price " 
                             , " 3. Change Stock ", " 4. Change Description " , " 5. Delete Product" , " 6. Exit");
-                            int option = readIntInput("Select an option: ");
+                            int option = ReadInput.readIntInput("Select an option: ");
                             switch (option){
                                 case 1:
-                                String newProductName = AskProductName();
+                                String newProductName = GetInfo.askProductName();
                                 p.setName(newProductName);
                                 p.updateProduct(newProductName, p.getPrice(), p.getSellCount() , p.getStock(), p.getDescription());
                                 AppSession.previousPage = pagenumber;
-                                profilePage();
+                                navigateToPage(ProfilePage.pagenumber);
                                 break;
                                 case 2:
-                                double newPrice = AskPrice();
+                                double newPrice = GetInfo.askPrice();
                                 p.setPrice(newPrice);
                                 p.updateProduct(p.getName(), newPrice, p.getSellCount() , p.getStock(), p.getDescription());
                                 AppSession.previousPage = pagenumber;
-                                profilePage();
+                                navigateToPage(ProfilePage.pagenumber);
                                 break;
                                 case 3:
-                                int stock = AskStock();
+                                int stock = GetInfo.askStock();
                                 p.setStock(stock);
                                 p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , stock , p.getDescription());
                                 AppSession.previousPage = pagenumber;
-                                profilePage();
+                                navigateToPage(ProfilePage.pagenumber);
                                 break;
                                 case 4:
-                                String desc = readInput("Enter new Description");
+                                String desc = ReadInput.readInput("Enter new Description");
                                 p.setDescription(desc);
                                 p.updateProduct(p.getName(), p.getPrice(), p.getSellCount() , p.getStock() , desc);
                                 AppSession.previousPage = pagenumber;
-                                profilePage();
+                                navigateToPage(ProfilePage.pagenumber);
                                 break;
                                 case 5:
                                 p.DeleteFromDataBase();
-                                productList.remove(p);
+                                ArrayLists.productList.remove(p);
                                 System.out.println(GREEN + "Successfuly Deleted the Product" + RESET);
                                 navigateToPage(pagenumber);
                                 case 6:
                                 AppSession.previousPage = pagenumber;
-                                profilePage();
+                                navigateToPage(ProfilePage.pagenumber);
                                 break;
                                 default:
                                 System.out.println(RED + "Please select valid option" + RESET);
@@ -80,7 +86,7 @@ public class UserProductsPage {
                 break;
                 case 2:
                 AppSession.previousPage = pagenumber;
-                profilePage();
+                navigateToPage(ProfilePage.pagenumber);
                 break;
                 default:
                 System.out.println(RED + "Please select valid option" + RESET);

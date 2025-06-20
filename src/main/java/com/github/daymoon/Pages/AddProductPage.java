@@ -8,9 +8,8 @@ import com.github.daymoon.Utils.AppSession;
 import com.github.daymoon.Utils.ReadInput;
 
 public class AddProductPage {
-    //Add Product Page
+    static int pagenumber = 8;
     public static void openPage(){
-        int pagenumber = 8;
         AppSession.currentPage = pagenumber;
         String pName;
         String pDesc;
