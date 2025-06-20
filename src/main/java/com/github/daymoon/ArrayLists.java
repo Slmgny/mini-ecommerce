@@ -1,12 +1,11 @@
 package com.github.daymoon;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import com.github.daymoon.DAO.*;
 import com.github.daymoon.Models.*;
 
-public class Initialization {
+public class ArrayLists {
     public static UserDAO users = new UserDAO();
     public static ProductDAO products = new ProductDAO();
     public static PurchaseDAO purchases = new PurchaseDAO();

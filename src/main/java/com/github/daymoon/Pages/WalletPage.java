@@ -5,7 +5,7 @@ import com.github.daymoon.Utils.AppSession;
 
 public class WalletPage {
      //Wallet Page
-    public void openPage(){
+    public static void openPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
         while(true){

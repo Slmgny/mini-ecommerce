@@ -11,8 +11,8 @@ public class Buy {
     public void buyCart(){
         double totalPrice = 0;
         boolean canBuy = true;
-        for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
-            Product p = products.getProductById(c.getProductId());
+        for(Cart c : ArrayLists.carts.getCartProductsByUserId(AppSession.currentUserId)){
+            Product p = ArrayLists.products.getProductById(c.getProductId());
             totalPrice += p.getPrice() * c.getAmount();
             if(p.getStock() < c.getAmount()){
                 System.out.println(YELLOW + "Insufficient stock. Only " + p.getStock() + " " + p.getName() + " is available" + RESET);
@@ -24,18 +24,18 @@ public class Buy {
             canBuy = false;
         }
         if(canBuy){
-            for(Cart c : carts.getCartProductsByUserId(AppSession.currentUserId)){
-                Product p = products.getProductById(c.getProductId());
-                User seller = users.getUserById(p.getSellerId());
+            for(Cart c : ArrayLists.carts.getCartProductsByUserId(AppSession.currentUserId)){
+                Product p = ArrayLists.products.getProductById(c.getProductId());
+                User seller = ArrayLists.users.getUserById(p.getSellerId());
                 double price = p.getPrice() * c.getAmount();
                 Purchase pur = new Purchase(c.getAmount(), AppSession.currentUserId , p.getSellerId() , p.getId() );
                 pur.AddToDataBase();
-                purchaseList.add(pur);
+                ArrayLists.purchaseList.add(pur);
                 AppSession.currentUser.Pay(price);
                 p.SellProduct(c.getAmount());
                 seller.depositMoney(price);
                 c.DeleteFromDataBase();
-                cartList.remove(c);
+                ArrayLists.cartList.remove(c);
             }
             System.out.println(GREEN +"Successful! Items in your cart have been purchased." + RESET);
             System.out.println(RED +"Total Price: " + totalPrice + RESET);
@@ -54,10 +54,10 @@ public class Buy {
         }else{
             Purchase pur = new Purchase(amount, AppSession.currentUserId, p.getSellerId(), p.getId());
             pur.AddToDataBase();
-            purchaseList.add(pur);
+            ArrayLists.purchaseList.add(pur);
             p.SellProduct(amount);
             AppSession.currentUser.Pay(price);
-            users.getUserById(p.getSellerId()).depositMoney(price);
+            ArrayLists.users.getUserById(p.getSellerId()).depositMoney(price);
             System.out.println(GREEN + "Purchase successful!" + RESET);
             System.out.println(RED +"Total Price: " + price + RESET);
             System.out.printf(GREEN + "New Balance: %.2f" + RESET + "\n", AppSession.currentUser.getMoney());

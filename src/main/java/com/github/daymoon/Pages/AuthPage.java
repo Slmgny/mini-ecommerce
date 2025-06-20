@@ -8,7 +8,7 @@ import com.github.daymoon.Utils.AppSession;
 
 public class AuthPage {
     //Login Sign Up Page
-    public void openPage(){
+    public static void openPage(){
         int pagenumber = 1;
         AppSession.currentPage = pagenumber;
         System.out.println(CYAN + "=== LOG IN OR SIGN UP ===" + RESET);

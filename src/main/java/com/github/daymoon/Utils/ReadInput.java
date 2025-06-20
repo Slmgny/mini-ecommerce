@@ -1,4 +1,4 @@
-package com.github.daymoon;
+package com.github.daymoon.Utils;
 
 import static com.github.daymoon.Utils.TextColors.*;
 
@@ -6,14 +6,11 @@ import java.util.Scanner;
 
 import static com.github.daymoon.Navigate.*;
 
-import com.github.daymoon.Utils.AppSession;
-import com.github.daymoon.Utils.HelpPrinter;
-
 public class ReadInput {
-    
+
     private static final Scanner sc = new Scanner(System.in);
 
-    private static String readInput(String prompt){
+    public static String readInput(String prompt){
         System.out.print(BLUE + prompt + RESET);
         String input = sc.nextLine().trim();
         switch (input.toLowerCase()){
@@ -76,14 +73,13 @@ public class ReadInput {
             return goToIfLoggedIn(8); // addProductPage
         case "user":
             System.out.println(AppSession.currentUser);
-            readInput(prompt);
-            break;
+            return readInput(prompt);
     }
 
     return input;
     }
 
-    private static int readIntInput(String prompt) {
+    public static int readIntInput(String prompt) {
         while (true) {
             String input = readInput(prompt);
             try {
@@ -94,7 +90,7 @@ public class ReadInput {
         }
     }
     
-    private static double readDoubleInput(String prompt) {
+    public static double readDoubleInput(String prompt) {
         while (true) {
             String input = readInput(prompt);
             try {

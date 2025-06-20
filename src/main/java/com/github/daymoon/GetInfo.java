@@ -1,6 +1,8 @@
-package com.github.daymoon.Ask;
+package com.github.daymoon;
 
 import static com.github.daymoon.Utils.TextColors.*;
+
+import com.github.daymoon.Utils.ReadInput;
 
 public class GetInfo {
 
@@ -8,7 +10,7 @@ public class GetInfo {
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            String name = readInput("Name: ");
+            String name = ReadInput.readInput("Name: ");
             if(name.length() <= 4){
                 System.out.println(RED + "User Name must be at least 4 characters" + RESET);
                 continue;
@@ -27,7 +29,7 @@ public class GetInfo {
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            double price = readDoubleInput("Price: ");
+            double price = ReadInput.readDoubleInput("Price: ");
             if(price <= 0){
                 System.out.println(RED + "Price can't be less than or equal to 0" + RESET);
                 continue;
@@ -41,7 +43,7 @@ public class GetInfo {
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            String name = readInput("Enter Product Name: ");
+            String name = ReadInput.readInput("Enter Product Name: ");
             if(name.length() < 4){
                 System.out.println(RED + "Product Name must be at least 4 characters" + RESET);
                 continue;
@@ -60,7 +62,7 @@ public class GetInfo {
 
         Boolean isCorrect = false;
         while(!isCorrect){
-            int stock = readIntInput("Stock: ");
+            int stock = ReadInput.readIntInput("Stock: ");
             if(stock <= 0){
                 System.out.println(RED + "Stock can't be less than 0" + RESET);
                 continue;

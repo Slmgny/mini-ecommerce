@@ -1,5 +1,10 @@
 package com.github.daymoon;
+
+import com.github.daymoon.Pages.*;
+import com.github.daymoon.Utils.*;
+
 import static com.github.daymoon.Utils.TextColors.*;
+
 
 public class Navigate {
     public static boolean navigateToPage(int pageNumber) {
@@ -7,15 +12,15 @@ public class Navigate {
         AppSession.currentPage = pageNumber;
 
         switch (pageNumber) {
-            case 1: LoginOrSignUpPage(); break;
-            case 2: mainPage(); break;
-            case 3: marketPage(); break;
-            case 4: profilePage(); break;
-            case 5: walletPage(); break;
-            case 6: cartPage(); break;
-            case 7: purchasesPage(); break;
-            case 8: AddProductPage(); break;
-            case 9: favoritesPage(); break;
+            case 1: AuthPage.openPage(); break;
+            case 2: MainPage.openPage(); break;
+            case 3: MarketPage.openPage(); break;
+            case 4: ProfilePage.openPage(); break;
+            case 5: WalletPage.openPage(); break;
+            case 6: CartPage.openPage(); break;
+            case 7: PurchasesPage.openPage(); break;
+            case 8: AddProductPage.openPage(); break;
+            case 9: FavoritesPage.openPage(); break;
             default: return false;
         }
             return true;
@@ -23,7 +28,7 @@ public class Navigate {
     public static String goToIfLoggedIn(int pageNumber) {
         if (AppSession.currentUser == null) {
             System.out.println(RED + "You haven't logged in yet" + RESET);
-            return readInput(">> ");
+            return ReadInput.readInput(">> ");
         }
         navigateToPage(pageNumber);
         return "";
