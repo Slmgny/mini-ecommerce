@@ -92,6 +92,7 @@ public class Product {
         stock -= amount;
         sellCount += amount;
         updateProduct(name, price, sellCount, stock, description);
+        
     }
 
 

@@ -34,12 +34,14 @@ public class PurchasesPage {
                         while (iterator.hasNext()) {
                             Purchase pur = iterator.next();
                             if (pur.getId() == i) {
+                                Product p = ArrayLists.products.getProductById(pur.getProductId()); //Product
                                 System.out.printf(GREEN + "%-20s" + RED + "%-20s\n" + RESET, " 1. Confirm ", " 2. Cancel");
                                 int option = ReadInput.readIntInput("Select an option: ");
                                 switch (option) {
                                     case 1:
                                         double price = ArrayLists.products.getProductById(pur.getProductId()).getPrice() * pur.getAmount();
                                         AppSession.currentUser.depositMoney(price);
+                                        ArrayLists.users.getUserById(p.getSellerId()).Pay(price);
                                         iterator.remove();
                                         pur.DeleteFromDataBase();
                                         System.out.println(GREEN + "Refund completed." + RESET);

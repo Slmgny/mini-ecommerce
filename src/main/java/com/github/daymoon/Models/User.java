@@ -83,7 +83,7 @@ public abstract class User {
     public void depositMoney(double depositMoney){
         this.money += depositMoney;
         if(AppSession.currentUserId == this.id)
-            System.out.println("New balance: " + this.money);
+            System.out.printf("New balance:  %.2f\n" + this.money);
             updateUser(name, password, money);
     }
     public void Pay(double pay){
