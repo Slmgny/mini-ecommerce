@@ -1,14 +1,14 @@
 package com.github.daymoon.Pages;
 
-import static com.github.daymoon.TextColors.*;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
-import com.github.daymoon.MarketUser;
-import com.github.daymoon.User;
+import com.github.daymoon.Models.MarketUser;
+import com.github.daymoon.Models.User;
+import com.github.daymoon.Utils.AppSession;
 
 public class AuthPage {
     //Login Sign Up Page
-    public void LoginOrSignUpPage(){
+    public void openPage(){
         int pagenumber = 1;
         AppSession.currentPage = pagenumber;
         System.out.println(CYAN + "=== LOG IN OR SIGN UP ===" + RESET);

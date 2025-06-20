@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.github.daymoon.DBConnection;
-import com.github.daymoon.Product;
+import com.github.daymoon.Models.Product;
 
 public class ProductDAO {
 

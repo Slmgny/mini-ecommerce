@@ -1,12 +1,13 @@
 package com.github.daymoon.Pages;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
-import com.github.daymoon.Cart;
-import com.github.daymoon.Product;
+import com.github.daymoon.Models.Cart;
+import com.github.daymoon.Models.Product;
+import com.github.daymoon.Utils.AppSession;
 
 public class CartPage {
     //Cart Page
-    public void cartPage(){
+    public void openPage(){
         int pagenumber = 6;
         AppSession.currentPage = pagenumber;
         while(true){

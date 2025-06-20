@@ -1,12 +1,12 @@
 package com.github.daymoon.Pages;
 
-import static com.github.daymoon.TextColors.*;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
+import com.github.daymoon.Utils.AppSession;
 
 public class MainPage {
     //Main Page
-    public void mainPage(){
+    public void openPage(){
         int pagenumber = 2;
         AppSession.currentPage = pagenumber;
         System.out.println(CYAN + "=== MAIN MENU ===" + RESET);

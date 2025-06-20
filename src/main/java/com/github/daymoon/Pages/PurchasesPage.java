@@ -1,12 +1,13 @@
 package com.github.daymoon.Pages;
+import static com.github.daymoon.Utils.TextColors.*;
 
 import java.util.Iterator;
 
-import com.github.daymoon.AppSession;
-import com.github.daymoon.Purchase;
+import com.github.daymoon.Models.Purchase;
+import com.github.daymoon.Utils.AppSession;
 
 public class PurchasesPage {
-    public void purchasesPage(){
+    public void openPage(){
         int pagenumber = 7;
         AppSession.currentPage = pagenumber;
         boolean found = false;

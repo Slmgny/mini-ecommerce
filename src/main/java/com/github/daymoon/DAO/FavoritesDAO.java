@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import com.github.daymoon.Favorites;
 import com.github.daymoon.DBConnection;
+import com.github.daymoon.Models.Favorites;
 
 public class FavoritesDAO {
     

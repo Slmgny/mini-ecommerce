@@ -34,15 +34,7 @@ public class Main {
     ArrayList<Cart> cartList = new ArrayList<>();
     ArrayList<Favorites> favoritesList = new ArrayList<>();
 
-    public static void main(String[] args) {
-        Main app = new Main();
-        app.init();
-        System.out.println();
-        app.run();
 
-        
-    }
-    
     private void init(){
 
         userList.addAll(users.getAllUsers());
@@ -52,6 +44,17 @@ public class Main {
         favoritesList.addAll(favorites.getAllFavorites());
 
     }
+    
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.init();
+        System.out.println();
+        app.run();
+
+        
+    }
+    
+    
 
     
     public void run(){
@@ -60,9 +63,5 @@ public class Main {
             
         }
     }
-
-    
-
-
 
 }

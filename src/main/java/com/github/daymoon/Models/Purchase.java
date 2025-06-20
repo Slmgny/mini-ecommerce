@@ -1,8 +1,10 @@
-package com.github.daymoon;
+package com.github.daymoon.Models;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.github.daymoon.DBConnection;
 
 public class Purchase {
     private int id;

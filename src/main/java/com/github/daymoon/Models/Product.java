@@ -1,6 +1,8 @@
-package com.github.daymoon;
+package com.github.daymoon.Models;
 
 import java.sql.*;
+
+import com.github.daymoon.DBConnection;
 
 public class Product {
 

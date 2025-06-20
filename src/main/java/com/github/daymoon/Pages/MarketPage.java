@@ -1,16 +1,16 @@
 package com.github.daymoon.Pages;
 
-import static com.github.daymoon.TextColors.*;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
-import com.github.daymoon.Cart;
-import com.github.daymoon.Favorites;
-import com.github.daymoon.Product;
+import com.github.daymoon.Models.Cart;
+import com.github.daymoon.Models.Favorites;
+import com.github.daymoon.Models.Product;
+import com.github.daymoon.Utils.AppSession;
 
 public class MarketPage {
     
     //Market Page
-    public void marketPage(){
+    public void openPage(){
         int pagenumber = 3;
         AppSession.currentPage = pagenumber;
         boolean valid = false;

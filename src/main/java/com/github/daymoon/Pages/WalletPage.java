@@ -1,10 +1,11 @@
 package com.github.daymoon.Pages;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
+import com.github.daymoon.Utils.AppSession;
 
 public class WalletPage {
      //Wallet Page
-    public void walletPage(){
+    public void openPage(){
         int pagenumber = 5;
         AppSession.currentPage = pagenumber;
         while(true){

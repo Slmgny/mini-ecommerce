@@ -1,11 +1,12 @@
 package com.github.daymoon.Pages;
+import static com.github.daymoon.Utils.TextColors.*;
 
-import com.github.daymoon.AppSession;
-import com.github.daymoon.Product;
+import com.github.daymoon.Models.Product;
+import com.github.daymoon.Utils.AppSession;
 
 public class AddProductPage {
     //Add Product Page
-    public void AddProductPage(){
+    public void openPage(){
         int pagenumber = 8;
         AppSession.currentPage = pagenumber;
         String pName;

@@ -1,10 +1,11 @@
-package com.github.daymoon;
+package com.github.daymoon.Models;
 
 
 import com.github.daymoon.DAO.CartDAO;
 import com.github.daymoon.DAO.ProductDAO;
 import com.github.daymoon.DAO.PurchaseDAO;
 import com.github.daymoon.DAO.UserDAO;
+import com.github.daymoon.Utils.AppSession;
 
 public class MarketUser extends User {
 

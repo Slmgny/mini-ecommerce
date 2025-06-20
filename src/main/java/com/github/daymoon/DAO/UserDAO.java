@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import com.github.daymoon.DBConnection;
-import com.github.daymoon.MarketUser;
-import com.github.daymoon.User;
+import com.github.daymoon.Models.MarketUser;
+import com.github.daymoon.Models.User;
 
 public class UserDAO {
     

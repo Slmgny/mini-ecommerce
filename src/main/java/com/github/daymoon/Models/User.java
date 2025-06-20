@@ -1,6 +1,9 @@
-package com.github.daymoon;
+package com.github.daymoon.Models;
 
 import java.sql.*;
+
+import com.github.daymoon.DBConnection;
+import com.github.daymoon.Utils.AppSession;
 
 public abstract class User {
     protected int id;
