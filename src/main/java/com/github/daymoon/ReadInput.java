@@ -1,18 +1,24 @@
 package com.github.daymoon;
 
 import static com.github.daymoon.Utils.TextColors.*;
+
+import java.util.Scanner;
+
 import static com.github.daymoon.Navigate.*;
 
 import com.github.daymoon.Utils.AppSession;
+import com.github.daymoon.Utils.HelpPrinter;
 
 public class ReadInput {
     
+    private static final Scanner sc = new Scanner(System.in);
+
     private static String readInput(String prompt){
         System.out.print(BLUE + prompt + RESET);
         String input = sc.nextLine().trim();
         switch (input.toLowerCase()){
             case "help":
-            printHelp();
+            HelpPrinter.printHelp();
             return readInput(prompt);
             case "exit":
             System.exit(0);
